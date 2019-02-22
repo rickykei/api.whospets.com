@@ -229,7 +229,22 @@ class Pet{
 		
         return $stmt;
     }
-    // getUserPets
+    //get petcat by user ID
+	 function getPetsCatByUserID(){
+        // select all query
+        $query = "SELECT sum(a.sub_category) as petcat FROM user c ,shop_store b, shop_products a 
+		WHERE c.id=b.user_id AND b.id = a.store_id and c.id='".$this->user_id."'
+		and a.sub_category in (1,2) 
+		group by sub_category";
+        // prepare query statement
+		//echo $query;
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+        return $stmt;
+    }
+	
+	// getUserPets
     function getUserPets(){
         // select all query
         $query = "SELECT
@@ -279,9 +294,20 @@ class Pet{
         return $stmt;
     }
 	
-		function getPetsByCountry($limit,$offset,$country_array){
+		function getPetsByCountry($limit,$offset,$country_array,$petcat){
 			
 		$str=implode(",",$country_array);
+		
+		if ($petcat >0 && $petcat <3){
+			$petcat_str=" and shop_products.sub_category in (".$petcat.")";
+		
+		}else if ($petcat==3){
+			$petcat_str=" and shop_products.sub_category in (1,2)";
+		}else {
+			$petcat_str="";
+		}
+		
+		
         // select all query
         $query = "SELECT
                     shop_products.*,shop_image.title as image,shop_image.filename as image,
@@ -294,11 +320,12 @@ class Pet{
 					shop_products.store_id=shop_store.id
 					and shop_products.product_id = shop_image.product_id and 
 					shop_products.sub_country_id in (".$str.")    
+					".$petcat_str."
 					order by shop_products.product_id desc 
 					limit ".$offset.", 10"
 					;
         // prepare query statement
-		//echo $query;
+		 //echo $query;
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();

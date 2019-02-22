@@ -18,18 +18,32 @@ $offset=0;
 // prepare user object
 $pet = new Pet($db);
 // set ID property of user to be edited
-
+ 
 isset($_REQUEST['pet_status'])? $pet->pet_status =$_REQUEST['pet_status']:$pet->pet_status=0; 
 isset($_REQUEST['sub_country_id_array'])? $sub_country_id_array =$_REQUEST['sub_country_id_array']:$sub_country_id_array=0; 
 isset($_REQUEST['limit'])? $limit =$_REQUEST['limit']:$limit=10; 
 isset($_REQUEST['offset'])? $offset =$_REQUEST['offset']:$offset=0; 
-
+isset($_REQUEST['user_id'])? $pet->user_id =$_REQUEST['user_id']:$pet->user_id=0; 
 
 //echo $pet->username ;
- if ($pet->pet_status!="")
-$stmt = $pet->getPetsByStatus($limit,$offset);	
-else if ($sub_country_id_array!="")
-$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array);	
+
+if ($pet->user_id==0){
+	
+	 if ($pet->pet_status!="")
+		$stmt = $pet->getPetsByStatus($limit,$offset);	
+	else if ($sub_country_id_array!="")
+		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,0);	
+}else{
+	$stmt=$pet->getPetsCatByUserID();
+	$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	if ($row['petcat']==1 || $row['petcat']==2){
+		 
+		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,$row['petcat']);	
+	}else{
+		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,3);	
+	}
+	
+}
 	
   
 if($stmt->rowCount() > 0){

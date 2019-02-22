@@ -1,0 +1,66 @@
+<?php
+
+
+header("Access-Control-Allow-Origin: *");
+header('Content-Type: application/json');
+
+// include database and object files
+include_once '../config/database.php';
+include_once '../objects/pet.php';
+ 
+// get database connection
+$database = new Database();
+$db = $database->getConnection();
+
+// prepare user object
+$pet = new Pet($db);
+// set ID property of user to be edited
+$pet->username =$_REQUEST['username']; 
+$pet->user_id=$_REQUEST['user_id']; 
+
+//echo $pet->username ;
+ 
+$stmt = $pet->getUserPets();	
+  
+if($stmt->rowCount() > 0){
+    // get retrieved row
+     
+    while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+	
+		foreach($row as $key=>$value ) {
+			if ($value==null)
+				$row[$key]="";
+		}
+		
+			if (!file_exists ("/vhost/sosopet/sosopet/images/product/".$row['image'])){
+				$row['image']="./assets/images/profile/200x200suarez.png";
+			}else{
+				$row['image']="http://whospets.com/images/product/thumb/".$row['image'];
+			}
+		
+		$petArr[]=$row;
+	}
+	
+	
+	//check image exist
+
+	
+    // create array
+    $user_arr=array(
+        "status" => "true",
+        "message" => "Successfully Get Pets!",
+		"records" => "".$stmt->rowCount()."",
+        "pets" => $petArr
+    );
+	$result = "{\"success\":\"true\", \"data\":". json_encode($petArr)."}";   
+}
+else{
+    $user_arr=array(
+        "status" => false,
+        "message" => "Invalid Username or Password!",
+    );
+	  $result = "{\"success\":\"false\"}";
+}
+// make it json format
+echo($result);
+?>

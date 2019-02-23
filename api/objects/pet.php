@@ -229,7 +229,8 @@ class Pet{
 		
         return $stmt;
     }
-    //get petcat by user ID
+	
+    //get owner petcat by user ID
 	 function getPetsCatByUserID(){
         // select all query
         $query = "SELECT sum(a.sub_category) as petcat FROM user c ,shop_store b, shop_products a 
@@ -321,7 +322,7 @@ class Pet{
 					and shop_products.product_id = shop_image.product_id and 
 					shop_products.sub_country_id in (".$str.")    
 					".$petcat_str."
-					order by shop_products.product_id desc 
+					order by likecnt desc ,shop_products.product_id desc 
 					limit ".$offset.", 10"
 					;
         // prepare query statement

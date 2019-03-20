@@ -48,6 +48,7 @@ if(!is_array($decoded)){
 	$profile->bio=  $decoded['bio'];
 	$profile->country_id= $decoded['country_id'];
 	$profile->sub_country_id= $decoded['sub_country_id'];
+	$profile->language= $decoded['language'];
 	
 	// read the details of user to be edited
 	

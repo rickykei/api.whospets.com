@@ -24,6 +24,7 @@ isset($_REQUEST['sub_country_id_array'])? $sub_country_id_array =$_REQUEST['sub_
 isset($_REQUEST['limit'])? $limit =$_REQUEST['limit']:$limit=10; 
 isset($_REQUEST['offset'])? $offset =$_REQUEST['offset']:$offset=0; 
 isset($_REQUEST['user_id'])? $pet->user_id =$_REQUEST['user_id']:$pet->user_id=0; 
+isset($_REQUEST['keyword'])? $keyword =$_REQUEST['keyword']:$keyword=''; 
 
 //echo $pet->username ;
 
@@ -33,16 +34,28 @@ if ($pet->user_id==0){
 		$stmt = $pet->getPetsByStatus($limit,$offset);	
 	else if ($sub_country_id_array!="")
 		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,0);	
+	else if ($keyword!="")
+		$stmt = $pet->getPetsBySearch($limit,$offset,$keyword);	
 }else{
+	
+	if ($sub_country_id_array==""){
+		//userid!=0 and subcountry ==""
+	$stmt = $pet->getPetsByStatus($limit,$offset);
+	}else{
+	//with user_id
 	$stmt=$pet->getPetsCatByUserID();
-	$row = $stmt->fetch(PDO::FETCH_ASSOC);
-	if ($row['petcat']==1 || $row['petcat']==2){
+	$i=0;
+	 while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+		 $i=$row['petcat']+$i;
+	 }
+	//echo "count=".$i;
+	if ($i==1 || $i==2){
 		 
-		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,$row['petcat']);	
+		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,$i);	
 	}else{
 		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,3);	
 	}
-	
+	}
 }
 	
   

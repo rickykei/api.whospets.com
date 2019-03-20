@@ -13,6 +13,8 @@ class User{
     public $password;
     public $created;
 	public $fb_uid;
+	public $firstname;
+	public $lastname;
 	
 	public $store_id;
 	public $profile_id;
@@ -89,10 +91,12 @@ order by a.id*/
         // Create Profile & Store for new user
         if($stmt->execute()){
 			$this->id = $this->conn->lastInsertId();
-				$query2= "INSERT INTO profile   SET  user_id=:user_id , email=:email";
+				$query2= "INSERT INTO profile   SET  user_id=:user_id , email=:email,firstname=:firstname,lastname=:lastname";
 				$stmt2 = $this->conn->prepare($query2);   
 				$stmt2->bindParam(":user_id", $this->id);
 				$stmt2->bindParam(":email", $this->username);
+				$stmt2->bindParam(":firstname", $this->firstname);
+				$stmt2->bindParam(":lastname", $this->lastname);
 				if($stmt2->execute()){
 					 
 					$query3= "INSERT INTO shop_store SET  user_id=:user_id ,
@@ -125,7 +129,7 @@ order by a.id*/
     function fblogin(){
         // select all query
         $query = "SELECT
-                    `id`, `username`, `password` 
+                    `id`, `username`, `password`  
                 FROM
                     " . $this->table_name . " 
                 WHERE
@@ -140,7 +144,7 @@ order by a.id*/
     function login(){
         // select all query
         $query = "SELECT
-                    `id`, `username`, `password`
+                    `id`, `username`, `password` 
                 FROM
                     " . $this->table_name . " 
                 WHERE

@@ -7,6 +7,8 @@ header('Content-Type: application/json');
 // include database and object files
 include_once '../config/database.php';
 include_once '../objects/user.php';
+include_once '../objects/profile.php';
+
  
 // get database connection
 $database = new Database();
@@ -14,6 +16,7 @@ $db = $database->getConnection();
 
 // prepare user object
 $user = new User($db);
+$profile = new Profile($db);
 // set ID property of user to be edited
 $user->username = isset($_REQUEST['username']) ? $_REQUEST['username'] : die();
 $user->password = base64_encode(isset($_REQUEST['password']) ? $_REQUEST['password'] : "");
@@ -29,6 +32,10 @@ if ($user->logintype=='fb'){
 }
 
 
+//get profile language
+$stmt2=$profile->getProfileByUsername($user->username);
+ $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+ 
 if($stmt->rowCount() > 0){
     // get retrieved row
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -38,6 +45,9 @@ if($stmt->rowCount() > 0){
         "message" => "Successfully Login!",
         "id" => $row['id'],
         "username" => $row['username'],
+		"language"=> $row2['language'],
+		"firstname"=> $row2['firstname'],
+		"lastname"=> $row2['lastname'],
 		"image" => "http://graph.facebook.com/".$user->fb_uid."/picture?type=normal"
     );
 	$result = "{\"success\":\"true\", \"data\":". json_encode($user_arr)."}";   

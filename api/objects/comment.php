@@ -65,17 +65,18 @@ class Comment{
 	  function getUserComments($limit,$offset){
         // select all query
         $query = "SELECT
-                    a.*,b.username
+                    a.*,b.username,c.firstname,c.lastname
                 FROM
-                    " . $this->table_n . " a , user b
+                    " . $this->table_n . " a , user b, profile c
                 WHERE
 					   content_id='".$this->content_id."' 
 					   and a.user_id = b.id 
 					   and a.table_name='".$this->table_name."' 
+					   and b.id = c.user_id
 					   order by a.id desc
 					   ";
         // prepare query statement
-		//echo $query;
+		 echo $query;
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();

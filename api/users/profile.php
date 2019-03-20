@@ -54,6 +54,7 @@ if($stmt->rowCount() > 0){
 		"bio" => $row['bio'],
 		"country_id" => $row['country_id'],
 		"sub_country_id" => $row['sub_country_id'],
+		"language" => $row['language'],
 		"fb_uid" => "http://graph.facebook.com/".$user->fb_uid."/picture?type=normal" 
 		//"fb_uid"=>"http://bmautohk.com/images/logo.jpg"
 		 

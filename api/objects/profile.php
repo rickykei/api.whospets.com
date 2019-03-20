@@ -24,12 +24,48 @@ class Profile{
 	public $bio;
 	public $country_id;
 	public $sub_country_id;
+	public $language;
 	
  
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
     }
+	
+	  function getProfileByUserId($user_id){
+    
+         
+        // query to insert record
+        $query = "select profile.* 
+		
+		from " . $this->table_name . " , user a 
+		where 
+		username=:username and a.id=profile.user_id 
+		";
+    
+	//echo $query;
+	 
+        // prepare query
+        $stmt = $this->conn->prepare($query);
+    
+        // sanitize
+        $this->username=htmlspecialchars(strip_tags($uname));
+    
+        // bind values
+        $stmt->bindParam(":username", $uname);
+   
+    
+        // execute query
+        if($stmt->execute()){
+           
+		    
+            return $stmt;
+        }
+    
+        return false;
+        
+    }
+	
     // signup user
     function getProfileByUsername($uname){
     
@@ -74,7 +110,8 @@ class Profile{
             $query = "update
                     " . $this->table_name . "
                 SET
-                    tc=:tc, lastname=:lastname,firstname=:firstname,email=:email,street=:street,city=:city,about=:about,newsletter=:newsletter,seller=:seller,notification=:notification,gender=:gender,birthday=:birthday,bio=:bio,country_id=:country_id,sub_country_id=:sub_country_id where id =:id ";
+                    tc=:tc,
+						language=:language,lastname=:lastname,firstname=:firstname,email=:email,street=:street,city=:city,about=:about,newsletter=:newsletter,seller=:seller,notification=:notification,gender=:gender,birthday=:birthday,bio=:bio,country_id=:country_id,sub_country_id=:sub_country_id where id =:id ";
 					 $stmt = $this->conn->prepare($query);
 						$stmt->bindParam(":id", $this->id);
 	 
@@ -94,6 +131,7 @@ class Profile{
 						$stmt->bindParam(":bio", $this->bio);
 						$stmt->bindParam(":country_id", $this->country_id);
 						$stmt->bindParam(":sub_country_id", $this->sub_country_id);
+						$stmt->bindParam(":language", $this->language);
         }else{
 			 
         // query to insert record

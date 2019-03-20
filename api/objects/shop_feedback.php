@@ -66,12 +66,13 @@ class Shop_feedback{
 	  function getPetComments($limit,$offset){
         // select all query
         $query = "SELECT
-                    a.id , a.user_id,a.store_id,a.order_id, a.product_id,a.feedback,a.comment, a.create_date as created_date ,b.username 
+                    a.id , a.user_id,a.store_id,a.order_id, a.product_id,a.feedback,a.comment, a.create_date as created_date ,b.username ,c.firstname,c.lastname 
                 FROM
-                    " . $this->table_n . " a , user b
+                    " . $this->table_n . " a , user b, profile c
                 WHERE
 					   a.product_id='".$this->product_id."' 
 					     and a.user_id = b.id 
+						 and b.id = c.user_id 
 					   order by a.id desc
 					   ";
         // prepare query statement

@@ -69,7 +69,6 @@ class Pet{
                 SET 
 					category_id=:category_id,
 					status=:status,
-					store_id=:store_id,
 					tax_id=:tax_id,
 					title=:title, 
 					description=:description,
@@ -118,7 +117,7 @@ class Pet{
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":category_id", $this->category_id);
         $stmt->bindParam(":status", $this->status);
-        $stmt->bindParam(":store_id", $this->store_id);
+        //$stmt->bindParam(":store_id", $this->store_id);
 		$stmt->bindParam(":tax_id", $this->tax_id);
 		$stmt->bindParam(":title", $this->title);
 		$stmt->bindParam(":description", $this->description);
@@ -382,6 +381,31 @@ class Pet{
         return $stmt;
     }
 	
+	// getUserPetsByProductId
+    function getUserPetsByProductId(){
+        // select all query
+        $query = "SELECT
+                    shop_products.*,
+					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id limit 0,1 ) as image,
+					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
+					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
+					shop_store.user_id 
+                FROM
+                     user,shop_store ," . $this->table_name . "  
+                WHERE
+					shop_products.store_id=shop_store.id
+					and shop_products.product_id=".$this->product_id."  
+					and shop_store.user_id = user.id
+                    and user.id='".$this->user_id."' 
+					order by shop_products.product_id desc";
+        // prepare query statement
+		//  echo $query;
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+        return $stmt;
+    }
+	
 	// getUserPets
     function getUserPets(){
         // select all query
@@ -414,12 +438,14 @@ class Pet{
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
 					shop_store.user_id as user_id ,
-					(select count(*) from shop_feedback b where b.product_id=shop_products.product_id ) as commentcnt
+					(select count(*) from shop_feedback b where b.product_id=shop_products.product_id ) as commentcnt ,
+					profile.lastname,profile.firstname
 					
                 FROM
-                    " . $this->table_name . "   ,shop_image, shop_store 
+                    " . $this->table_name . "   ,shop_image, shop_store ,profile
                 WHERE
 					shop_products.store_id=shop_store.id
+					and profile.user_id=shop_store.id
 					and shop_products.product_id = shop_image.product_id and 
 					shop_products.pet_status=".$this->pet_status."   
 					order by shop_products.product_id desc 

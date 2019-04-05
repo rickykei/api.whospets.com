@@ -67,6 +67,7 @@ isset($decoded['date_lost'])? $pet->date_lost =$decoded['date_lost']:$pet->date_
 isset($decoded['date_born'])? $pet->date_born =$decoded['date_born']:$pet->date_born=""; 
 isset($decoded['sub_category'])? $pet->sub_category =$decoded['sub_category']:$pet->sub_category=""; 
 isset($decoded['weight'])? $pet->weight =$decoded['weight']:$pet->weight=""; 
+isset($decoded['height'])? $pet->height =$decoded['height']:$pet->height=""; 
 isset($decoded['name_of_pet'])? $pet->name_of_pet =$decoded['name_of_pet']:$pet->name_of_pet=""; 
 isset($decoded['country'])? $pet->country =$decoded['country']:$pet->country=""; 
 isset($decoded['contact'])? $pet->contact =$decoded['contact']:$pet->contact=""; 
@@ -92,7 +93,7 @@ if ($pet->product_id!=''){
 			//upload image 20190106
 			if ($img->avatar!=''){
 				
-				$img->product_id = $pet->id;
+				$img->product_id = $pet->product_id;
 				$img->is_default='Y';
 				$stmt=$img->addImage();
 			}
@@ -100,7 +101,7 @@ if ($pet->product_id!=''){
 			 $user_arr=array(
 			"status" => true,
 			"message" => "Successfully update pet!",
-			"id" => $pet->id
+			"product_id" => $pet->product_id
 			);
 			$result = "{\"success\":\"true\", \"data\":". json_encode($user_arr)."}";   
 		}else{

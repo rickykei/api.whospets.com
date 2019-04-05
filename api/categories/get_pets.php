@@ -27,7 +27,7 @@ isset($_REQUEST['user_id'])? $pet->user_id =$_REQUEST['user_id']:$pet->user_id=0
 isset($_REQUEST['keyword'])? $keyword =$_REQUEST['keyword']:$keyword=''; 
 
 //echo $pet->username ;
-
+$stmt='';
 if ($pet->user_id==0){
 	
 	 if ($pet->pet_status!="")
@@ -36,6 +36,7 @@ if ($pet->user_id==0){
 		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,0);	
 	else if ($keyword!="")
 		$stmt = $pet->getPetsBySearch($limit,$offset,$keyword);	
+	
 }else{
 	
 	if ($sub_country_id_array==""){
@@ -49,17 +50,17 @@ if ($pet->user_id==0){
 		 $i=$row['petcat']+$i;
 	 }
 	//echo "count=".$i;
-	if ($i==1 || $i==2){
-		 
-		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,$i);	
-	}else{
-		$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,3);	
-	}
+		if ($i==1 || $i==2){
+			 
+			$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,$i);	
+		}else{
+			$stmt = $pet->getPetsByCountry($limit,$offset,$sub_country_id_array,3);	
+		}
 	}
 }
 	
   
-if($stmt->rowCount() > 0){
+if($stmt!='' && $stmt->rowCount() > 0){
     // get retrieved row
     while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
 		foreach($row as $key=>$value ) {

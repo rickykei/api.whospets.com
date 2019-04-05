@@ -12,14 +12,19 @@ include_once '../objects/pet.php';
 $database = new Database();
 $db = $database->getConnection();
 
+
 // prepare user object
 $pet = new Pet($db);
+
 // set ID property of user to be edited
 $pet->username =$_REQUEST['username']; 
 $pet->user_id=$_REQUEST['user_id']; 
-
+isset($_REQUEST['product_id'])? $pet->product_id=$_REQUEST['product_id']:$pet->product_id=""; 
 //echo $pet->username ;
  
+ if ($pet->product_id!=""){
+ $stmt = $pet->getUserPetsByProductId();		 }
+	 else
 $stmt = $pet->getUserPets();	
   
 if($stmt->rowCount() > 0){

@@ -135,9 +135,17 @@ order by a.id*/
                 WHERE
                     username='".$this->username."' and activationKey ='' ";
         // prepare query statement
+		
+		
+		
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
+		
+		
+		$update_fb_id_query=" update profile set fb_id=".$this->fb_uid." where user_id=( select id from user where username='".$this->username."')";
+		 $stmt2 = $this->conn->prepare($update_fb_id_query);
+		 $stmt2->execute();
         return $stmt;
     }
     // login user

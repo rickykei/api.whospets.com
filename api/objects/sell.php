@@ -77,10 +77,16 @@ class Sell{
 		$query = "update
                     " . $this->table_name . "
                 SET
-                      email=:email,title=:title,description=:description,modified_date=now() where id =:id ";
+                      email=:email,title=:title,description=:description,modified_date=now(),price=:price,size=:size,
+						color=:color,weight=:weight,country_id=:country_id,sub_country_id=:sub_country_id where id =:id ";
 					    $stmt = $this->conn->prepare($query);
 						$stmt->bindParam(":id", $this->id);
-						//$stmt->bindParam(":user_id", $this->user_id);
+						$stmt->bindParam(":price", $this->price);
+						$stmt->bindParam(":size", $this->size);
+						$stmt->bindParam(":color", $this->color);
+						$stmt->bindParam(":weight", $this->weight);
+						$stmt->bindParam(":country_id", $this->country_id);
+						$stmt->bindParam(":sub_country_id", $this->sub_country_id);
 						$stmt->bindParam(":email", $this->email);
 						$stmt->bindParam(":title", $this->title);
 						$stmt->bindParam(":description", $this->description);

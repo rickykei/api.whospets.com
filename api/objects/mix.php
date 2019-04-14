@@ -24,6 +24,7 @@ class Mix{
 		
 				SELECT
 					c.id,
+					(select title from shop_products  where product_id = c.owner_pet_id)  as product_title,
                     b.filename as image,
 					b.app_table as app_table,
 					b.created_date,
@@ -37,6 +38,7 @@ class Mix{
 				union all
 				SELECT
 					c.id,
+					(select title from shop_products  where product_id = c.owner_pet_id)  as product_title,
                     b.filename as image,
 					b.app_table as app_table,
 					b.created_date,
@@ -50,6 +52,7 @@ class Mix{
 				union all
 				SELECT
 					c.id,
+					'' as product_title,
                     b.filename as image,
 					b.app_table as app_table,
 					b.created_date,
@@ -80,6 +83,7 @@ class Mix{
 				SELECT
 					c.id,
 					c.title,
+					(select title from shop_products  where product_id = c.owner_pet_id)  as product_title,
 					c.description,
                     b.filename as image,
 					b.app_table as app_table,
@@ -98,6 +102,7 @@ class Mix{
 				SELECT
 					c.id,
 					c.title,
+					(select title from shop_products  where product_id = c.owner_pet_id)  as product_title,
 					c.description,
                     b.filename as image,
 					b.app_table as app_table,

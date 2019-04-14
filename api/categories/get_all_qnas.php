@@ -36,7 +36,9 @@ if($stmt->rowCount() > 0){
 		if (!file_exists ("/vhost/sosopet/sosopet/images/app_img/QNA/".$row['image'])){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 			}else{
-				$row['image']="http://whospets.com/images/app_img/QNA/thumb/".$row['image'];
+				$aa=$row['image'];
+				$row['image']="http://whospets.com/images/app_img/QNA/thumb/".$aa;
+				$row['image_large']="http://whospets.com/images/app_img/QNA/".$aa;
 			}
 		
 		 

@@ -38,7 +38,9 @@ if($stmt->rowCount() > 0){
 		if (!file_exists ("/vhost/sosopet/sosopet/images/app_img/LIFESTYLE/".$row['image'])){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 			}else{
-				$row['image']="http://whospets.com/images/app_img/LIFESTYLE/thumb/".$row['image'];
+				$aa=$row['image'];
+				$row['image']="http://whospets.com/images/app_img/LIFESTYLE/thumb/".$aa;
+				$row['image_large']="http://whospets.com/images/app_img/LIFESTYLE/".$aa;
 			}
 		$postArr[]=$row;
 	}

@@ -127,6 +127,7 @@ class Qna{
         // select all query
         $query = "SELECT
                     a.* ,
+					(select title from shop_products b where product_id = a.owner_pet_id)  as product_title,
 					b.filename as image,
 					(select count(*) from app_like b where b.content_id=a.id and b.table_name='app_qna') as likecnt,
 					(select count(*) from app_like b where b.content_id=a.id and b.user_id=a.user_id and b.table_name='app_qna') as ownlike,
@@ -159,6 +160,7 @@ class Qna{
         // select all query
         $query = "SELECT
                      a.* ,
+					 (select title from shop_products b where product_id = a.owner_pet_id)  as product_title,
 					b.filename as image,
 					(select count(*) from app_like b where b.content_id=a.id and b.table_name='app_qna') as likecnt,
 					(select count(*) from app_like b where b.content_id=a.id and b.user_id=a.user_id and b.table_name='app_qna') as ownlike,

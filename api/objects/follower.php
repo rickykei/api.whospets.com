@@ -69,15 +69,15 @@ class Follower{
         // select all query
         $query = "SELECT
                     a.id ,a.username,b.user_id,b.follower_user_id ,
-					if ((select id from app_follower c where c.follower_user_id= b.user_id and c.user_id=".$this->user_id." )>8,'Y','N') as followed, profile.fb_id
+					if ((select id from app_follower c where c.follower_user_id= b.user_id and c.user_id=".$this->user_id." )>8,'Y','N') as followed,
+					c.fb_id
                 FROM
                     user a , app_follower b  , profile c
                 WHERE
 					   a.id=b.user_id and
 					   a.id=c.user_id and
 					   b.follower_user_id='".$this->user_id."'
-						 
-					    
+ 
 					   ";
         // prepare query statement
 		//echo $query;

@@ -22,6 +22,8 @@ $user->username = isset($_REQUEST['username']) ? $_REQUEST['username'] : die();
 $user->password = base64_encode(isset($_REQUEST['password']) ? $_REQUEST['password'] : "");
 $user->logintype = isset($_REQUEST['logintype']) ? $_REQUEST['logintype'] : die();
 $user->fb_uid = isset($_REQUEST['fb_uid']) ? $_REQUEST['fb_uid'] : "";
+$user->device_id = isset($_REQUEST['device_id']) ? $_REQUEST['device_id'] : "";
+
 
 // read the details of user to be edited
 

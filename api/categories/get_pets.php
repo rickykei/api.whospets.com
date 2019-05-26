@@ -48,6 +48,7 @@ if ($pet->user_id==0){
 	$i=0;
 	 while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
 		 $i=$row['petcat']+$i;
+		// echo $i;
 	 }
 	//echo "count=".$i;
 		if ($i==1 || $i==2){

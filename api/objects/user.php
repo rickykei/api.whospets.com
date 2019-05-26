@@ -13,6 +13,7 @@ class User{
     public $password;
     public $created;
 	public $fb_uid;
+	public $device_id;
 	public $firstname;
 	public $lastname;
 	
@@ -31,11 +32,11 @@ where upper(username) like upper('%c%')
 and a.id <> 514
 order by a.id*/
 		 $query = "SELECT
-                    a.id ,a.username,b.user_id,b.follower_user_id , if(b.user_id=".$this->id.",'Y','N') as followed
+                    a.id ,a.username,b.user_id,b.follower_user_id , profile.fb_id,if(b.user_id=".$this->id.",'Y','N') as followed
                 FROM
-                   app_follower b right join  user a on a.id=b.follower_user_id
+                   app_follower b right join  user a on a.id=b.follower_user_id, profile
                 WHERE
-                   upper(username) like upper('%".$this->username."%') 
+                   a.id=profile.user_id  and upper(username) like upper('%".$this->username."%') 
 			and a.id <> ".$this->id."
 			order by a.id;";
         // prepare query statement
@@ -143,7 +144,7 @@ order by a.id*/
         $stmt->execute();
 		
 		
-		$update_fb_id_query=" update profile set fb_id=".$this->fb_uid." where user_id=( select id from user where username='".$this->username."')";
+		$update_fb_id_query=" update profile set fb_id=".$this->fb_uid." , device_id=".$this->device_id." where user_id=( select id from user where username='".$this->username."')";
 		 $stmt2 = $this->conn->prepare($update_fb_id_query);
 		 $stmt2->execute();
         return $stmt;
@@ -161,6 +162,12 @@ order by a.id*/
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
+		
+		$update_fb_id_query=" update profile set  device_id=".$this->device_id." where user_id=( select id from user where username='".$this->username."')";
+		 $stmt2 = $this->conn->prepare($update_fb_id_query);
+		 $stmt2->execute();
+		 
+		 
         return $stmt;
     }
 	

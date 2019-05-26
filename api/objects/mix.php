@@ -65,7 +65,7 @@ class Mix{
 					   and c.user_id ='".$this->user_id."'	   
 			) a
 			order by id desc 
-			limit ".$offset.", 10"
+			limit ".$offset.", ".$limit
 					   ;
         // prepare query statement
 		//echo $query;
@@ -157,7 +157,7 @@ class Mix{
                     and user.id in (".$following_user_id_str.")
 			) a
 			order by created_date desc
-			limit ".$offset.", 10"
+			limit ".$offset.", ".$limit
 					   ;
         // prepare query statement
 	//	echo $query;

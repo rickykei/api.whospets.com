@@ -26,7 +26,13 @@ $user->id=$requester_user_id;
 if($stmt->rowCount() > 0){
     // get retrieved row
     while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-	 $row['image']="./assets/images/profile/200x200jordan.png";
+	 	if ($row['fb_id']=="0")
+		 $row['image']="./assets/images/profile/200x200jordan.png";
+		else
+			$row['image']="http://graph.facebook.com/".$row['fb_id']."/picture?type=normal";
+		 
+	 
+	// $row['image']="./assets/images/profile/200x200jordan.png";
 		$arr[]=$row;
 		 
 			 

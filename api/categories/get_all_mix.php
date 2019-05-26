@@ -22,7 +22,7 @@ $user = new User($db);
 $post->user_id =$_REQUEST['user_id']; 
 $user->id=$_REQUEST['user_id']; 
  
-isset($_REQUEST['limit'])? $limit =$_REQUEST['limit']:$limit=10; 
+isset($_REQUEST['limit'])? $limit =$_REQUEST['limit']:$limit=100; 
 isset($_REQUEST['offset'])? $offset =$_REQUEST['offset']:$offset=0; 
  
 $user->getStoreIdByUserId();

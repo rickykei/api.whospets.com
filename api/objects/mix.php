@@ -91,7 +91,8 @@ class Mix{
 					c.user_id,
 					(select count(*) from app_like a where a.content_id=c.id and a.table_name='app_post') as likecnt,
 					(select count(*) from app_like a where a.content_id=c.id and a.user_id=c.user_id and a.table_name='app_post') as ownlike,
-					(select count(*) from app_comment a where a.content_id=c.id and a.table_name='app_post') as commentcnt
+					(select count(*) from app_comment a where a.content_id=c.id and a.table_name='app_post') as commentcnt 
+				
                 FROM
                    app_image b,app_post c
                 WHERE
@@ -110,7 +111,8 @@ class Mix{
 					c.user_id,
 					(select count(*) from app_like a where a.content_id=c.id and a.table_name='app_qna') as likecnt,
 					(select count(*) from app_like a where a.content_id=c.id and a.user_id=c.user_id and a.table_name='app_qna') as ownlike,
-					(select count(*) from app_comment a where a.content_id=c.id and a.table_name='app_qna') as commentcnt
+					(select count(*) from app_comment a where a.content_id=c.id and a.table_name='app_qna') as commentcnt 
+					 
                 FROM
                    app_image b,app_qna c
                 WHERE
@@ -121,6 +123,7 @@ class Mix{
 				SELECT
 					c.id,
 					c.title,
+					'' as product_title,
 					c.description,
                     b.filename as image,
 					b.app_table as app_table,
@@ -128,7 +131,8 @@ class Mix{
 					c.user_id,
 					(select count(*) from app_like a where a.content_id=c.id and a.table_name='app_sell') as likecnt,
 					(select count(*) from app_like a where a.content_id=c.id and a.user_id=c.user_id and a.table_name='app_sell') as ownlike,
-					(select count(*) from app_comment a where a.content_id=c.id and a.table_name='app_sell') as commentcnt
+					(select count(*) from app_comment a where a.content_id=c.id and a.table_name='app_sell') as commentcnt 
+					 
                 FROM
                    app_image b,
 				   app_sell c 
@@ -140,6 +144,7 @@ class Mix{
 				SELECT
                    c.product_id,
 				   c.title,
+				   '' as product_title,
 					c.description,
 				   shop_image.filename as image,
 				   'shop_product',

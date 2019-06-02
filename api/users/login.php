@@ -23,8 +23,7 @@ $user->password = base64_encode(isset($_REQUEST['password']) ? $_REQUEST['passwo
 $user->logintype = isset($_REQUEST['logintype']) ? $_REQUEST['logintype'] : die();
 $user->fb_uid = isset($_REQUEST['fb_uid']) ? $_REQUEST['fb_uid'] : "";
 $user->device_id = isset($_REQUEST['device_id']) ? $_REQUEST['device_id'] : "";
-
-
+ 
 // read the details of user to be edited
 
 if ($user->logintype=='fb'){

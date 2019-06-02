@@ -144,7 +144,10 @@ order by a.id*/
         $stmt->execute();
 		
 		
-		$update_fb_id_query=" update profile set fb_id=".$this->fb_uid." , device_id=".$this->device_id." where user_id=( select id from user where username='".$this->username."')";
+		
+		$update_fb_id_query=" update profile set fb_id=".$this->fb_uid." , device_id='".$this->device_id."' where user_id=( select id from user where username='".$this->username."')";
+		
+		//echo $update_fb_id_query;
 		 $stmt2 = $this->conn->prepare($update_fb_id_query);
 		 $stmt2->execute();
         return $stmt;
@@ -163,7 +166,7 @@ order by a.id*/
         // execute query
         $stmt->execute();
 		
-		$update_fb_id_query=" update profile set  device_id=".$this->device_id." where user_id=( select id from user where username='".$this->username."')";
+		$update_fb_id_query=" update profile set  device_id='".$this->device_id."' where user_id=( select id from user where username='".$this->username."')";
 		 $stmt2 = $this->conn->prepare($update_fb_id_query);
 		 $stmt2->execute();
 		 

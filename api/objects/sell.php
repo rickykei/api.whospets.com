@@ -173,6 +173,35 @@ class Sell{
         return $stmt;
     }  
 	
+	function getContent(){
+        // select all query
+        $query = "SELECT
+                    a.* ,
+					b.filename as image,
+					(select count(*) from app_like b where b.content_id=a.id and b.table_name='app_sell') as likecnt,
+					(select count(*) from app_like b where b.content_id=a.id and b.user_id=a.user_id and b.table_name='app_sell') as ownlike,
+					(select count(*) from app_comment b where b.content_id=a.id and b.table_name='app_sell') as commentcnt
+                FROM
+                    " . $this->table_name . " a ,app_image b
+                WHERE
+					   ";
+					
+		if ($this->id!=""){
+				$query.=" a.id=".$this->id;
+		}
+		$query.="
+					   and a.id= b.product_id 
+					   and b.app_table='SELL'
+					   order by a.id desc
+					   limit ".$limit." offset ".$offset ;
+        // prepare query statement
+		//echo $query;
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+        return $stmt;
+    }  
+	
 	function getAllSells($limit,$offset){
         // select all query
         $query = "SELECT

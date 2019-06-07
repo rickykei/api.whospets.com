@@ -121,7 +121,36 @@ class Qna{
         return false;
         
     }
-    
+    function getContent(){
+        // select all query
+        $query = "SELECT
+                    a.* ,
+					(select title from shop_products b where product_id = a.owner_pet_id)  as product_title,
+					b.filename as image,
+					(select count(*) from app_like b where b.content_id=a.id and b.table_name='app_qna') as likecnt,
+					(select count(*) from app_like b where b.content_id=a.id and b.user_id=a.user_id and b.table_name='app_qna') as ownlike,
+					(select count(*) from app_comment b where b.content_id=a.id and b.table_name='app_qna') as commentcnt
+                FROM
+                    " . $this->table_name . " a ,app_image b
+                WHERE
+					     b.app_table='QNA'
+					   
+					   ";
+					
+		if ($this->id!=""){
+				$query.=" and a.id=".$this->id;
+		}
+		$query.="
+					   and a.id= b.product_id 
+					   order by a.id desc"
+					  ;
+        // prepare query statement
+		//echo $query;
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+        return $stmt;
+    } 
          // getUserPosts
     function getUserQnas($limit,$offset){
         // select all query

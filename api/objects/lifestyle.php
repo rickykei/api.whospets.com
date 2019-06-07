@@ -119,7 +119,34 @@ class Lifestyle{
         return false;
         
     }
-    
+             // getUserPosts
+    function getContent(){
+        // select all query
+        $query = "SELECT
+                     a.* ,
+					(select title from shop_products b where product_id = a.owner_pet_id)  as product_title,
+					b.filename as image,
+					(select count(*) from app_like b where b.content_id=a.id and b.table_name='app_post') as likecnt,
+					(select count(*) from app_like b where b.content_id=a.id and b.user_id=a.user_id and b.table_name='app_post') as ownlike,
+					(select count(*) from app_comment b where b.content_id=a.id and b.table_name='app_post') as commentcnt
+                FROM
+                    app_post a ,app_image b
+                WHERE
+					 
+					   a.id= b.product_id and ";
+					   
+					 if ($this->id>0)
+					$query.=" a.id ='".$this->id."' and ";			
+					$query.=" b.app_table='LIFESTYLE'
+						order by a.id desc
+						";
+        // prepare query statement
+		//echo $query;
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+        return $stmt;
+    }  
          // getUserPosts
     function getUserPosts($limit,$offset){
         // select all query

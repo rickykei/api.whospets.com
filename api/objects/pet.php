@@ -381,6 +381,31 @@ class Pet{
         return $stmt;
     }
 	
+	
+	// getUserPetsByProductId
+    function getContent(){
+        // select all query
+        $query = "SELECT
+                    shop_products.*,
+					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id limit 0,1 ) as image,
+					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
+					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
+					shop_store.user_id 
+                FROM
+                     user,shop_store ," . $this->table_name . "  
+                WHERE
+					shop_products.store_id=shop_store.id
+					and shop_products.product_id=".$this->product_id."  
+					and shop_store.user_id = user.id
+                   order by shop_products.product_id desc";
+        // prepare query statement
+		//  echo $query;
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+        return $stmt;
+    }
+	
 	// getUserPetsByProductId
     function getUserPetsByProductId(){
         // select all query

@@ -20,7 +20,7 @@ class Comment{
         $this->conn = $db;
     }
  
-	// Create Post
+	// Create User Comment for App post ONLY (not for pet product)
     function createComment($user_id,$content_id,$table_name,$comment){
 		$this->user_id=$user_id;
 		  
@@ -34,16 +34,62 @@ class Comment{
 						$stmt->bindParam(":content_id", $this->content_id);
 						$stmt->bindParam(":table_name", $this->table_name);
 						$stmt->bindParam(":comment", $this->comment);
-		//echo $query;
-		
+	
 		
         if($stmt->execute()){		 
             $this->id = $this->conn->lastInsertId();
+			
+	
+			
+			
+			
             return true;
         }
         return false;
     }
     
+	function getDeviceIdByContentId($content_id,$table_name,$post_user_id){
+        // select all query
+		
+		if ($table_name=='shop_product'){
+        $query = "SELECT
+                    b.device_id
+                FROM
+                      profile as b,".$table_name." as c
+                WHERE
+					   c.product_id='$content_id'
+					   and b.user_id=c.user_id
+					   and b.user_id != '$post_user_id'
+					   ";
+		}else{
+			 $query = "SELECT
+                    b.device_id
+                FROM
+                      app_comment as a,profile as b,".$table_name." as c
+                WHERE
+					   c.id='$content_id'
+					  and b.user_id=c.user_id
+					  and b.user_id != '$post_user_id'
+					   ";
+		}
+        // prepare query statement
+		//echo $query;
+		 $stmt = $this->conn->prepare($query);
+         if($stmt->execute()){
+
+           if($stmt->rowCount() > 0){
+				while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+					$device_id=$row['device_id'];
+				}
+				return $device_id;
+		   }else{
+			    return "";
+		   }
+            
+        }
+    }  
+	
+	
     function getCommentCount(){
         // select all query
         $query = "SELECT
@@ -76,7 +122,7 @@ class Comment{
 					   order by a.id desc
 					   ";
         // prepare query statement
-		 echo $query;
+		// echo $query;
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();

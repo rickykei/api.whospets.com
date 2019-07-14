@@ -62,8 +62,8 @@ order by a.id*/
 			return $this->store_id;
         }
 		return false;
-	}
-	
+    }
+    	
     // signup user
     function signup(){
     
@@ -217,4 +217,5 @@ order by a.id*/
             return false;
         }
     }
+
 }

@@ -8,7 +8,10 @@ include_once '../config/database.php';
 include_once '../objects/user.php';
 include_once '../objects/sell.php';
 include_once '../objects/appimage.php';
- 
+ include_once '../objects/push.php';
+ include_once '../objects/country.php';
+include_once '../objects/profile.php';
+
 
  //get post json
 $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
@@ -30,7 +33,9 @@ if(!is_array($decoded)){
 // prepare user object
 	$sell = new Sell($db);
 	$user = new User($db);
-	
+	$push = new Push($db);
+	$country= new Country($db);
+	$profile = new Profile($db);
 // set ID property of user to be edited
 
 	
@@ -61,8 +66,20 @@ if(!is_array($decoded)){
 			$img->is_default='N';
 			$stmt=$img->addImage();
 		}
-		//
-
+	//if sell post created , add push notification
+	if ($stmt!=""){
+		$country->getDistrictNameById($sell->sub_country_id);
+		$dids=$profile->getDeviceIdByCountryId($sell->sub_country_id);
+		$push->device_id = implode(",",$dids);
+			$push->push_title = $sell->title.", ".$sell->description." is available from ".$country->title;   
+			$push->push_content = $sell->title.", ".$sell->description." is available from ".$country->title;  
+			$push->push_app_table = "app_sell"; 
+			$push->push_content_id = $sell->id;  
+			$push->approved ="0";
+			
+			$stmt2=$push->createPush();
+	}
+	
 if($stmt){
     
     $user_arr=array(

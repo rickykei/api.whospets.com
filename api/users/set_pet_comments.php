@@ -1,5 +1,5 @@
 <?php
- 
+  ini_set('error_reporting', E_ALL);
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
@@ -7,6 +7,7 @@ header('Content-Type: application/json');
 include_once '../config/database.php';
 include_once '../objects/user.php';
 include_once '../objects/shop_feedback.php';
+include_once '../objects/push.php';
  
 
 //get post json
@@ -29,6 +30,9 @@ if(!is_array($decoded)){
 // prepare user object
 	$post = new Shop_feedback($db);
 	$user = new User($db);
+	$push = new Push($db);
+	
+	
 	
 // set ID property of user to be edited
 	$user->id = isset($decoded['user_id']) ? $decoded['user_id'] : die();
@@ -38,11 +42,28 @@ if(!is_array($decoded)){
 	$post->product_id= $decoded['product_id'];
 	
 	$user->getStoreIdByUserId();
- 
+ 	
 	if($user->id==''||$post->comment==''||$post->product_id==''|| $user->store_id==''){
 		$stmt=false;
 	}else{
+	
 		$stmt = $post->createComment($user->id,$post->product_id, $user->store_id,$post->comment);
+		
+		//find content owner device id
+			$device_id_str=$post->getDeviceIdByContentId($post->product_id, "shop_products",$user->id);
+				//	echo $device_id_str;
+			// insert push record
+			//if post creator <> post owner
+			if ($device_id_str!=""){
+				$push->device_id = $device_id_str;
+				$push->push_title = "New comments for whospets pet";  
+				$push->push_content = $post->comment;  
+				$push->push_app_table = "shop_products"; 
+				$push->push_content_id = $post->product_id;  
+				$push->approved ="0";
+			
+				$stmt2=$push->createPush();
+			}
  	}
 	
 if($stmt){

@@ -9,7 +9,9 @@ include_once '../objects/pet.php';
 include_once '../objects/user.php';
 include_once '../objects/profile.php';
 include_once '../objects/image.php';
- 
+include_once '../objects/push.php';
+include_once '../objects/country.php';
+
  //get post json
 $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
 if(strcasecmp($contentType, 'application/json') != 0){
@@ -32,7 +34,10 @@ $avatar ="";
 
 $user = new User($db);
 $pet = new Pet($db);
-
+$profile = new Profile($db);
+// push
+$push = new Push($db);
+$country= new Country($db);
 // set ID property of user to be edited
 
 isset($decoded['username'])? $user->username=$decoded['username'] :$user->username=""; 
@@ -85,7 +90,7 @@ $img->avatar=$avatar;
 
 //echo $user->username;
 $pet->store_id=$user->getStoreIdByUsername($user->username);
-
+ 
 if( $pet->store_id !="" && $pet->store_id >0){
 
 	if($pet->addPet()){ 
@@ -96,6 +101,56 @@ if( $pet->store_id !="" && $pet->store_id >0){
 			$img->is_default='N';
 			$stmt=$img->addImage();
 		}
+
+		//add push if pet is looking for adoption
+		 
+		if($pet->pet_status == '3')
+		{
+			//find all device_id which user live in hk
+			$dids=$profile->getDeviceIdByCountryId(1);
+			
+			$push->device_id = implode(",",$dids);
+			$push->push_title = "Pets need adoption!";  
+			$push->push_content = $pet->name_of_pet." is looking for a new home, please get in touch if you are interested!";  
+			$push->push_app_table = "shop_products"; 
+			$push->push_content_id = $pet->id;  
+			$push->approved ="0";
+			
+			$stmt2=$push->createPush();
+		}else if ($pet->pet_status == '1'){
+			
+			//find pet lost district
+			$country->getDistrictNameById($pet->sub_country_id);
+			//find all device_id which user live in pet lost district
+			$dids=$profile->getDeviceIdByCountryId($pet->sub_country_id);
+			
+			$push->device_id = implode(",",$dids);
+			$push->push_title = "Please Help! ".$pet->name_of_pet." is lost in ".$country->title;  
+			$push->push_content = "Please Help! ".$pet->name_of_pet." is lost in ".$country->title.", Please help to keep an eye for my lost pet.
+";  
+			$push->push_app_table = "shop_products"; 
+			$push->push_content_id = $pet->id;  
+			$push->approved ="0";
+			
+			$stmt2=$push->createPush();
+		}else if ($pet->pet_status == '2'){
+			
+			//find pet lost district
+			$country->getDistrictNameById($pet->sub_country_id);
+			//find all device_id which user live in pet lost district
+			$dids=$profile->getDeviceIdByCountryId($pet->sub_country_id);
+			
+			$push->device_id = implode(",",$dids);
+			$push->push_title = "I have found this lost pet in ".$country->title.", Please help search for it’s owner!";  
+			$push->push_content = "I have found this lost pet in ".$country->title.", Please help search for it’s owner!";
+			$push->push_app_table = "shop_products"; 
+			$push->push_content_id = $pet->id;  
+			$push->approved ="0";
+			
+			$stmt2=$push->createPush();
+		}
+
+
 		//
 		 $user_arr=array(
         "status" => true,

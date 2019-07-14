@@ -1,5 +1,5 @@
 <?php
- 
+   ini_set('error_reporting', E_ALL);
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
@@ -9,7 +9,9 @@ include_once '../objects/user.php';
 include_once '../objects/profile.php';
 include_once '../objects/qna.php';
 include_once '../objects/appimage.php';
- 
+include_once '../objects/push.php';
+include_once '../objects/pet.php';
+
 
  //get post json
 $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
@@ -33,6 +35,9 @@ if(!is_array($decoded)){
 // prepare user object
 	$post = new Qna($db);
 	$user = new User($db);
+	$push = new Push($db);	
+	$pet = new Pet($db);
+	
 	
 // set ID property of user to be edited
 	$user->user_id = isset($decoded['user_id']) ? $decoded['user_id'] : die();
@@ -52,15 +57,32 @@ if(!is_array($decoded)){
 		$stmt=false;
 	}else{
 		$stmt = $post->createQna($user->user_id);
+		
 		//upload image 20190106
 		if ($img->avatar!=''){
 			
 			$img->product_id = $post->id;
 			$img->app_table = "QNA";
 			$img->is_default='N';
-			$stmt=$img->addImage();
+			$stmt2=$img->addImage();
 		}
-		//
+		//add push
+		
+		if ($stmt){
+			//find cat or dog
+			$pet->findPetBreedByPetId($post->owner_pet_id);
+			//echo $pet->category_id;
+			$dids=$pet->getDeviceIdsByPetBreed($pet->category_id);
+			$push->device_id = implode(",",$dids);
+			$push->push_title = "Please help! ".$post->title.", ".$post->description." ";   
+			$push->push_content = "Please help! ".$post->title.", ".$post->description." ";   
+			$push->push_app_table = "app_qna"; 
+			$push->push_content_id = $post->id;  
+			$push->approved ="0";
+			
+			$stmt2=$push->createPush();
+			
+		}
 	}
 	
 if($stmt){

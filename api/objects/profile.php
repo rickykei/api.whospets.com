@@ -25,12 +25,37 @@ class Profile{
 	public $country_id;
 	public $sub_country_id;
 	public $language;
+	public $device_id;
 	
  
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
     }
+	
+ 
+	function getDeviceIdByCountryId($country_id){
+		
+		$device_id_sql=" SELECT device_id,user_id FROM `profile` WHERE `country_id` = 1 and device_id != '' ";
+		$stmt = $this->conn->prepare($device_id_sql);
+		
+		 if($stmt->execute()){
+
+           if($stmt->rowCount() > 0){
+
+			$i=0;
+			while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+				$device_ids[$i]=$row['device_id'];
+				$user_ids[$i]=$row['user_id'];
+				$i++;
+			}
+		   }
+            return $device_ids;
+
+        }
+	}
+	
+	
 	
 	  function getProfileByUserId($user_id){
     
@@ -92,15 +117,95 @@ class Profile{
     
         // execute query
         if($stmt->execute()){
-           
-		    
             return $stmt;
         }
     
         return false;
         
     }
-	
+function getProfileDetailByUsername($uname){
+
+    
+
+         
+
+        // query to insert record
+
+        $query = "select profile.* 
+
+		
+
+		from " . $this->table_name . " , user a 
+
+		where 
+
+		username=:username and a.id=profile.user_id 
+
+		";
+
+    
+
+	//echo $query;
+
+	 
+
+        // prepare query
+
+        $stmt = $this->conn->prepare($query);
+
+    
+
+        // sanitize
+
+        $this->username=htmlspecialchars(strip_tags($uname));
+
+    
+
+        // bind values
+
+        $stmt->bindParam(":username", $uname);
+
+   
+
+    
+
+        // execute query
+
+        if($stmt->execute()){
+
+           if($stmt->rowCount() > 0){
+
+			 
+
+			while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+
+				 
+
+			$this->device_id=$row['device_id'];
+
+			$this->id=$row['id'];
+
+           $this->user_id=$row['user_id'];
+
+			}
+
+		   }
+
+		    
+
+            return $stmt;
+
+        }
+
+    
+
+        return false;
+
+        
+
+    }
+
+		
 
 		 // Create profile
     function createProfile($user_id){

@@ -1,6 +1,6 @@
 <?php
 // Same as error_reporting(E_ALL);
-ini_set('error_reporting', E_ALL);
+//ini_set('error_reporting', E_ALL);
 class Pet{
  
     // database connection and table name
@@ -61,6 +61,43 @@ class Pet{
         $this->conn = $db;
     }
 	
+	
+	function getDeviceIdsByPetBreed($catId){
+		 $query = "SELECT distinct device_id 
+		 from profile as a,shop_products as b , shop_store as c
+		 where b.category_id='$catId' 
+		 and a.user_id=c.user_id
+		 and b.store_id=c.id
+		 ";
+		 $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+		 if($stmt->rowCount() > 0){
+			$i=0;
+			while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+				$device_id[$i]=$row['device_id'];
+				$i++;
+				 
+			}
+			return $device_id;
+		   }
+	}
+	
+	function findPetBreedByPetId($pet_id){
+		 $query = "SELECT category_id from shop_products where product_id='$pet_id'";
+		  $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+		 if($stmt->rowCount() > 0){
+
+			while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+				$this->category_id=$row['category_id'];
+				 
+			}
+			return true;
+		   }
+		 
+	}
 		//update Pet Info 
     function updatePet(){ 
         // query to insert record
@@ -544,7 +581,7 @@ class Pet{
 	
 	public static function deleteDir($dirPath) {
     if (! is_dir($dirPath)) {
-        throw new InvalidArgumentException("$dirPath must be a directory");
+      //  throw new InvalidArgumentException("$dirPath must be a directory");
     }
     if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
         $dirPath .= '/';
@@ -557,6 +594,7 @@ class Pet{
             unlink($file);
         }
     }
+	if ( is_dir($dirPath)) 
     rmdir($dirPath);
 	}
 	

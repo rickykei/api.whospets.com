@@ -21,6 +21,39 @@ class Shop_feedback{
         $this->conn = $db;
     }
  
+ 
+	function getDeviceIdByContentId($content_id,$table_name,$post_user_id){
+        // select all query
+		
+		if ($table_name=='shop_products'){
+        $query = "SELECT
+                    b.device_id
+                FROM
+                      shop_store as a ,profile as b,".$table_name." as c
+                WHERE
+					   c.product_id='$content_id'
+					   and a.id=c.store_id
+					   and a.user_id=b.user_id
+					   and a.user_id != '$post_user_id'
+					   ";
+		} 
+        // prepare query statement
+		//echo $query;
+		 $stmt = $this->conn->prepare($query);
+         if($stmt->execute()){
+
+           if($stmt->rowCount() > 0){
+				while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+					$device_id=$row['device_id'];
+				}
+				return $device_id;
+		   }else{
+			    return "";
+		   }
+            
+        }
+    }  
+	
 	// Create Post
     function createComment($user_id,$product_id, $store_id,$comment){
 		$this->user_id=$user_id;

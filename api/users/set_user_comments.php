@@ -1,5 +1,5 @@
 <?php
- 
+ ini_set('error_reporting', E_ALL);
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
@@ -7,8 +7,7 @@ header('Content-Type: application/json');
 include_once '../config/database.php';
 include_once '../objects/user.php';
 include_once '../objects/comment.php';
- 
- 
+include_once '../objects/push.php';
  
 
 //get post json
@@ -31,7 +30,7 @@ if(!is_array($decoded)){
 // prepare user object
 	$post = new Comment($db);
 	$user = new User($db);
-	
+	$push = new Push($db);
 // set ID property of user to be edited
 	$user->user_id = isset($decoded['user_id']) ? $decoded['user_id'] : die();
     //$user->user_id= $_REQUEST['user_id'];
@@ -44,6 +43,26 @@ if(!is_array($decoded)){
 		$stmt=false;
 	}else{
 		$stmt = $post->createComment($user->user_id,$post->content_id, $post->table_name,$post->comment);
+		
+				
+			//create push record
+		
+			//find content owner device id
+			$device_id_str=$post->getDeviceIdByContentId($post->content_id, $post->table_name,$user->user_id);
+			
+			//$device_id_str;
+			// insert push record
+			//if post creator <> post owner
+			if ($device_id_str!=""){
+				$push->device_id = $device_id_str;
+				$push->push_title = "New comments for whospets";  
+				$push->push_content = $post->comment;  
+				$push->push_app_table = $post->table_name; 
+				$push->push_content_id = $post->content_id;  
+				$push->approved ="0";
+			
+				$stmt2=$push->createPush();
+			}
  	}
 	
 if($stmt){

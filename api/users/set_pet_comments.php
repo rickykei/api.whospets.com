@@ -60,8 +60,8 @@ if(!is_array($decoded)){
 				$push->push_content = $post->comment;  
 				$push->push_app_table = "shop_products"; 
 				$push->push_content_id = $post->product_id;  
-				$push->approved ="0";
-			
+				$push->approved ="1";
+				$push->type = 3;
 				$stmt2=$push->createPush();
 			}
  	}

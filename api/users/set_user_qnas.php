@@ -78,8 +78,8 @@ if(!is_array($decoded)){
 			$push->push_content = "Please help! ".$post->title.", ".$post->description." ";   
 			$push->push_app_table = "app_qna"; 
 			$push->push_content_id = $post->id;  
-			$push->approved ="0";
-			
+			$push->approved ="1";
+			$push->type =6;
 			$stmt2=$push->createPush();
 			
 		}

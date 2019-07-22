@@ -115,7 +115,7 @@ if( $pet->store_id !="" && $pet->store_id >0){
 			$push->push_app_table = "shop_products"; 
 			$push->push_content_id = $pet->id;  
 			$push->approved ="0";
-			
+			$push->type =2;
 			$stmt2=$push->createPush();
 		}else if ($pet->pet_status == '1'){
 			
@@ -131,7 +131,7 @@ if( $pet->store_id !="" && $pet->store_id >0){
 			$push->push_app_table = "shop_products"; 
 			$push->push_content_id = $pet->id;  
 			$push->approved ="0";
-			
+			$push->type =1;
 			$stmt2=$push->createPush();
 		}else if ($pet->pet_status == '2'){
 			
@@ -141,12 +141,12 @@ if( $pet->store_id !="" && $pet->store_id >0){
 			$dids=$profile->getDeviceIdByCountryId($pet->sub_country_id);
 			
 			$push->device_id = implode(",",$dids);
-			$push->push_title = "I have found this lost pet in ".$country->title.", Please help search for it’s owner!";  
-			$push->push_content = "I have found this lost pet in ".$country->title.", Please help search for it’s owner!";
+			$push->push_title = "I have found this lost pet in ".$country->title.", Please help search for it's owner!";  
+			$push->push_content = "I have found this lost pet in ".$country->title.", Please help search for it's owner!";
 			$push->push_app_table = "shop_products"; 
 			$push->push_content_id = $pet->id;  
 			$push->approved ="0";
-			
+			$push->type =5;
 			$stmt2=$push->createPush();
 		}
 

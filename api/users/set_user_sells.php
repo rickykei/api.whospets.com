@@ -75,8 +75,8 @@ if(!is_array($decoded)){
 			$push->push_content = $sell->title.", ".$sell->description." is available from ".$country->title;  
 			$push->push_app_table = "app_sell"; 
 			$push->push_content_id = $sell->id;  
-			$push->approved ="0";
-			
+			$push->approved ="1";
+			$push->type =4;
 			$stmt2=$push->createPush();
 	}
 	

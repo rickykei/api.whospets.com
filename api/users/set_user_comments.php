@@ -8,17 +8,18 @@ include_once '../config/database.php';
 include_once '../objects/user.php';
 include_once '../objects/comment.php';
 include_once '../objects/push.php';
- 
-
+  
 //get post json
 $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
 if(strcasecmp($contentType, 'application/json') != 0){
 	
-    //throw new Exception('Content type must be: application/json');
+  //  throw new Exception('Content type must be: application/json');
 }
 $content = trim(file_get_contents("php://input"));
+	 
 $decoded = json_decode($content, true);
 if(!is_array($decoded)){
+
     throw new Exception('Received content contained invalid JSON!');
 }
   
@@ -59,8 +60,8 @@ if(!is_array($decoded)){
 				$push->push_content = $post->comment;  
 				$push->push_app_table = $post->table_name; 
 				$push->push_content_id = $post->content_id;  
-				$push->approved ="0";
-			
+				$push->approved ="1";
+				$push->type = 3;
 				$stmt2=$push->createPush();
 			}
  	}

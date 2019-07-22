@@ -14,7 +14,8 @@ class Push{
     public $push_content_id;   
     public $sent;   
     public $modified_datetime;   
-    public $approved;   
+    public $approved;
+	public $type;
 
     // constructor with $db as database connection
     public function __construct($db){
@@ -30,7 +31,7 @@ class Push{
 	}
     // signup user
     function getPushRecords(){
-		 $query = "select * from app_push_record where sent is null ";
+		 $query = "select * from app_push_record where sent is null and approved ='1' ";
 		 	$stmt = $this->conn->prepare($query);
 		
 		    if($stmt->execute()){		 
@@ -51,7 +52,7 @@ class Push{
 			$query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                push_title=:push_title,push_content=:push_content,push_app_table=:push_app_table,push_content_id=:push_content_id,approved=:approved,modified_datetime=now(), device_id=:device_id";
+                push_title=:push_title,push_content=:push_content,push_app_table=:push_app_table,push_content_id=:push_content_id,approved=:approved,type=:type,modified_datetime=now(),created_date=now(), device_id=:device_id";
 					   $stmt = $this->conn->prepare($query);
                        $stmt->bindParam(":device_id", $this->device_id);
                        $stmt->bindParam(":push_title", $this->push_title);
@@ -59,6 +60,7 @@ class Push{
                        $stmt->bindParam(":push_app_table", $this->push_app_table);
 						$stmt->bindParam(":push_content_id", $this->push_content_id);
 						$stmt->bindParam(":approved", $this->approved);	 
+						$stmt->bindParam(":type", $this->type);	 
  
 		//echo $query;
  

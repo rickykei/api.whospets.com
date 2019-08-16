@@ -83,7 +83,14 @@ class Qna{
 						$stmt->bindParam(":owner_pet_id", $this->owner_pet_id);
 		// execute query
         if($stmt->execute()){		 
-            $this->id = $this->conn->lastInsertId();
+		// delete app_img record if hv
+			$query = "update 
+                    app_image set is_default='N' 
+                       where product_id =:id and app_table='SELL' ";
+					    $stmt2 = $this->conn->prepare($query);
+						$stmt2->bindParam(":id", $this->id);
+						$stmt2->execute();
+           // $this->id = $this->conn->lastInsertId();
             return true;
         }
 
@@ -141,7 +148,8 @@ class Qna{
 				$query.=" and a.id=".$this->id;
 		}
 		$query.="
-					   and a.id= b.product_id 
+					   and a.id= b.product_id and
+					   b.is_default='Y'
 					   order by a.id desc"
 					  ;
         // prepare query statement

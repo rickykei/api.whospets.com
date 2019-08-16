@@ -40,6 +40,7 @@ isset($decoded['username'])? $user->username=$decoded['username'] :$user->userna
 
 //set lifestyle class
 $post->id = isset($decoded['id']) ? $decoded['id'] : die();
+
 $user->user_id = isset($decoded['user_id']) ? $decoded['user_id'] : die();
 $post->user_id = isset($decoded['user_id']) ? $decoded['user_id'] : die();
 isset($decoded['email'])? $post->email =$decoded['email']:$email=""; 
@@ -62,7 +63,7 @@ if($user->user_id==''|| $post->id==''){
 		$stmt = $post->updateSell($user->user_id,$post->id);
 		//updae image 20190406
 		if ($img->avatar!=''){
-			
+	//		echo $post->id;
 			$img->product_id = $post->id;
 			$img->app_table = "SELL";
 			$img->is_default='Y';

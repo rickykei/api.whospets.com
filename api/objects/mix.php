@@ -34,7 +34,9 @@ class Mix{
                 WHERE
 					   c.id= b.product_id
             and app_table='LIFESTYLE'     
+			 and b.is_default='Y'
 					   and c.user_id ='".$this->user_id."' 
+         group by c.id
 				union all
 				SELECT
 					c.id,
@@ -48,7 +50,9 @@ class Mix{
                 WHERE
 					   c.id= b.product_id
               and app_table='QNA' 
+			   and b.is_default='Y'
 					   and c.user_id ='".$this->user_id."' 
+        group by c.id
 				union all
 				SELECT
 					c.id,
@@ -62,7 +66,9 @@ class Mix{
                 WHERE
 					   c.id= b.product_id
              and app_table='SELL' 
+			  and b.is_default='Y'
 					   and c.user_id ='".$this->user_id."'	   
+         group by c.id
 			) a
 			order by id desc 
 			limit ".$offset.", ".$limit
@@ -97,8 +103,10 @@ class Mix{
                    app_image b,app_post c
                 WHERE
 					   c.id= b.product_id
-            and app_table='LIFESTYLE'     
+						and app_table='LIFESTYLE'     
+						and b.is_default='Y'
 					   and c.user_id in (".$following_user_id_str.")
+					   group by id
 				union all
 				SELECT
 					c.id,
@@ -118,7 +126,9 @@ class Mix{
                 WHERE
 					   c.id= b.product_id
               and app_table='QNA' 
+			  and b.is_default='Y'
 					   and c.user_id in (".$following_user_id_str.")
+					    group by id
 				union all
 				SELECT
 					c.id,
@@ -138,8 +148,10 @@ class Mix{
 				   app_sell c 
                 WHERE
 					   c.id= b.product_id 
-					   and b.app_table='SELL' 
+					   and b.app_table='SELL'
+					and b.is_default='Y'					   
 					   and c.user_id in (".$following_user_id_str.")
+					    group by id
 				union all
 				SELECT
                    c.product_id,
@@ -159,7 +171,9 @@ class Mix{
                 WHERE
 					c.store_id=shop_store.id
 					and shop_store.user_id = user.id
+					and shop_image.is_default='Y'
                     and user.id in (".$following_user_id_str.")
+					 group by shop_image.id
 			) a
 			order by created_date desc
 			limit ".$offset.", ".$limit

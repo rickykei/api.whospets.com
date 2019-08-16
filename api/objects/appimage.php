@@ -34,6 +34,12 @@ class Appimage{
 		$this->avatar=$base64imgstr;
     }
 	
+	public function update_image_filename(){
+		$this->title=date('Ymdhhmmss')."uploadbyapp.jpg";
+		$this->filename=md5($this->title);
+	}
+	
+	
 	public function base64_to_jpeg( $base64_string, $output_file ) {
     $ifp = fopen( $output_file, "wb" ); 
     fwrite( $ifp, base64_decode( $base64_string) ); 
@@ -44,6 +50,7 @@ class Appimage{
     // add Image
     function addImage(){ 
 	
+	//update_image_filename();
 	$fname=$this->product_id.'/'.$this->filename.".".$this->exten;
 	$name=$this->filename;
 	$name_wfn=$this->filename;
@@ -64,7 +71,7 @@ class Appimage{
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":filename",$fname);
         $stmt->bindParam(":product_id", $this->product_id);
-		$stmt->bindParam(":is_default", $this->is_default);
+		$stmt->bindParam(":is_default","Y");
 		$stmt->bindParam(":app_table", $this->app_table);
  
 		

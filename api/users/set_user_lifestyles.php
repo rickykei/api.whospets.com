@@ -59,7 +59,7 @@ if(!is_array($decoded)){
 			
 			$img->product_id = $post->id;
 			$img->app_table = "LIFESTYLE";
-			$img->is_default='N';
+			$img->is_default='Y';
 			$stmt=$img->addImage();
 		}
 		//

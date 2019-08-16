@@ -63,7 +63,7 @@ if(!is_array($decoded)){
 			
 			$img->product_id = $sell->id;
 			$img->app_table = "SELL";
-			$img->is_default='N';
+			$img->is_default='Y';
 			$stmt=$img->addImage();
 		}
 	//if sell post created , add push notification

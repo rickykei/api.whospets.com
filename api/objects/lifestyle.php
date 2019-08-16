@@ -81,7 +81,14 @@ class Lifestyle{
 						$stmt->bindParam(":description", $this->description);
 		// execute query
         if($stmt->execute()){		 
-            $this->id = $this->conn->lastInsertId();
+            //$this->id = $this->conn->lastInsertId();
+			// delete app_img record if hv
+			$query = "update 
+                    app_image set is_default='N' 
+                       where product_id =:id and app_table='SELL' ";
+					    $stmt2 = $this->conn->prepare($query);
+						$stmt2->bindParam(":id", $this->id);
+						$stmt2->execute();
             return true;
         }
 
@@ -137,7 +144,8 @@ class Lifestyle{
 					   
 					 if ($this->id>0)
 					$query.=" a.id ='".$this->id."' and ";			
-					$query.=" b.app_table='LIFESTYLE'
+					$query.=" b.app_table='LIFESTYLE' and
+					b.is_default='Y'
 						order by a.id desc
 						";
         // prepare query statement

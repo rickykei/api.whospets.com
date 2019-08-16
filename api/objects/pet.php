@@ -409,6 +409,7 @@ class Pet{
                     and (shop_products.pet_id like '%".$keywords."%'  or 
 					shop_products.name_of_pet like '%".$keywords."%'  or 
 					shop_products.title like '%".$keywords."%'  )
+					GROUP BY shop_products.store_id
 					order by shop_products.product_id desc";
         // prepare query statement
 		 //echo $query;
@@ -427,6 +428,7 @@ class Pet{
 					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id limit 0,1 ) as image,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
+					(select count(*) from shop_feedback b where b.product_id=shop_products.product_id ) as commentcnt ,
 					shop_store.user_id 
                 FROM
                      user,shop_store ," . $this->table_name . "  
@@ -434,7 +436,7 @@ class Pet{
 					shop_products.store_id=shop_store.id
 					and shop_products.product_id=".$this->product_id."  
 					and shop_store.user_id = user.id
-                   order by shop_products.product_id desc";
+					order by shop_products.product_id desc";
         // prepare query statement
 		//  echo $query;
         $stmt = $this->conn->prepare($query);
@@ -510,6 +512,7 @@ class Pet{
 					and profile.user_id=shop_store.id
 					and shop_products.product_id = shop_image.product_id and 
 					shop_products.pet_status=".$this->pet_status."   
+					GROUP BY shop_products.store_id
 					order by shop_products.product_id desc 
 					limit ".$offset.", 10"
 					;
@@ -537,7 +540,7 @@ class Pet{
 		
         // select all query
         $query = "SELECT
-                    shop_products.*,shop_image.title as image,shop_image.filename as image,
+                    distinct shop_image.product_id,shop_products.*,shop_image.title as image,shop_image.filename as image,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
 					(select count(*) from shop_feedback b where b.product_id=shop_products.product_id ) as commentcnt
@@ -545,9 +548,11 @@ class Pet{
                     " . $this->table_name . "  ,shop_image , shop_store 
                 WHERE
 					shop_products.store_id=shop_store.id
+					
 					and shop_products.product_id = shop_image.product_id and 
 					shop_products.sub_country_id in (".$str.")    
 					".$petcat_str."
+					GROUP BY shop_products.store_id
 					order by likecnt desc ,shop_products.product_id desc 
 					limit ".$offset.", 10"
 					;

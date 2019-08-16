@@ -92,7 +92,14 @@ class Sell{
 						$stmt->bindParam(":description", $this->description);
 		// execute query
         if($stmt->execute()){		 
-            $this->id = $this->conn->lastInsertId();
+	// delete app_img record if hv
+			$query = "update 
+                    app_image set is_default='N' 
+                       where product_id =:id and app_table='SELL' ";
+					    $stmt2 = $this->conn->prepare($query);
+						$stmt2->bindParam(":id", $this->id);
+						$stmt2->execute();
+            //$this->id = $this->conn->lastInsertId();
             return true;
         }
 
@@ -163,6 +170,7 @@ class Sell{
 		$query.="
 					   and a.id= b.product_id 
 					   and b.app_table='SELL'
+					   and b.is_default='Y'
 					   order by a.id desc
 					   limit ".$limit." offset ".$offset ;
         // prepare query statement
@@ -192,10 +200,11 @@ class Sell{
 		$query.="
 					   and a.id= b.product_id 
 					   and b.app_table='SELL'
-					   order by a.id desc
-					   limit ".$limit." offset ".$offset ;
+					    and b.is_default='Y'
+					   order by a.id desc"
+					    ;
         // prepare query statement
-		//echo $query;
+	//	echo $query;
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();

@@ -63,7 +63,7 @@ if(!is_array($decoded)){
 			
 			$img->product_id = $post->id;
 			$img->app_table = "QNA";
-			$img->is_default='N';
+			$img->is_default='Y';
 			$stmt2=$img->addImage();
 		}
 		//add push

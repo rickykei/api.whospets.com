@@ -52,6 +52,7 @@ if($stmt->rowCount() > 0){
      
     while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
 	
+	//print_r($row);
 		foreach($row as $key=>$value ) {
 			if ($value==null)
 				$row[$key]="";

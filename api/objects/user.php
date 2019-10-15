@@ -32,20 +32,43 @@ where upper(username) like upper('%c%')
 and a.id <> 514
 order by a.id*/
 		 $query = "SELECT
-                    a.id ,a.username,b.user_id,b.follower_user_id , profile.fb_id,if(b.user_id=".$this->id.",'Y','N') as followed
+                    a.id ,a.username, b.fb_id
                 FROM
-                   app_follower b right join  user a on a.id=b.follower_user_id, profile
+                  user a , profile b
                 WHERE
-                   a.id=profile.user_id  and upper(username) like upper('%".$this->username."%') 
-			and a.id <> ".$this->id."
-			order by a.id;";
+                   a.id=b.user_id  
+				   and upper(username) like upper('%".$this->username."%') 
+					order by a.id;";
         // prepare query statement
 		
-	//	echo $query;
+	 //echo $query;
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
-        return $stmt;
+		
+		//check if follower
+		 if($stmt->rowCount() > 0){
+			 $i=0;
+			while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+				$result[$i]['id']=$row['id'];
+				$result[$i]['username']=$row['username'];
+				$result[$i]['fb_id']=$row['fb_id'];
+				 $query2=" select * from app_follower where user_id=".$this->id." and follower_user_id=".$result[$i]['id'];
+				 
+				  $stmt2 = $this->conn->prepare($query2);
+				   $stmt2->execute();
+				 if($stmt2->rowCount() > 0){
+					 $result[$i]['followed']='Y';
+				 }else{
+					 $result[$i]['followed']='N';
+				 }
+				 
+				 $i++;
+			}
+            return $result;
+        }
+		
+        return false;
 	}
 	
 	function getUserIdByUsername($uname){

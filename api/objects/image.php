@@ -42,10 +42,11 @@ class Image{
 	 
     // add Image
     function addImage(){ 
-	
+	$this->filename=md5(date('Ymdhhmmss').$this->title);
 	$fname=$this->product_id.'/'.$this->filename.".".$this->exten;
 	$name=$this->filename;
 	$name_wfn=$this->filename;
+	 
         // query to insert record
         $query = "INSERT INTO 
                      shop_image 

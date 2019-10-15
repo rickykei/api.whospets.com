@@ -23,21 +23,20 @@ $user->id=$requester_user_id;
 // read the details of user to be edited
 	$stmt = $user->searchUser();	
 
-if($stmt->rowCount() > 0){
+if(count($stmt)>0){
     // get retrieved row
-    while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-	 	if ($row['fb_id']=="0")
-		 $row['image']="./assets/images/profile/200x200jordan.png";
+    for($i=0;$i<count($stmt);$i++){
+	 	if ($stmt[$i]['fb_id']=="0")
+		 $stmt[$i]['image']="./assets/images/profile/200x200jordan.png";
 		else
-			$row['image']="http://graph.facebook.com/".$row['fb_id']."/picture?type=normal";
+			$stmt[$i]['image']="http://graph.facebook.com/".$stmt[$i]['fb_id']."/picture?type=normal";
 		 
 	 
 	// $row['image']="./assets/images/profile/200x200jordan.png";
-		$arr[]=$row;
 		 
 			 
 	}
-	$result = "{\"success\":\"true\", \"data\":". json_encode( $arr)."}";   
+	$result = "{\"success\":\"true\", \"data\":". json_encode( $stmt)."}";   
 }
 else{
     $user_arr=array(

@@ -1,5 +1,5 @@
 <?php
-    define( 'API_SERVER_ACCESS_KEY', 'AAAAi600M1M:APA91bF674Ea8uKwWyvwoIpaXHOsQwZHMSaXHB4Fm6leraPjUpslXVcW3Jxm3YzJWlZAy7j7gOvsv0bViTxEYh-AJGSM9q1hAQVm74-Yb5bSWmBQ4bqLBWB19loc0GaanppKDCuX0INM' );
+    define( 'API_SERVER_ACCESS_KEY', 'AAAAw0Uv6AY:APA91bEtObML3vSPEefb7r-Ekpdjv3iLb2c-omp1laE0OtczbP49jjyhJTERLcBV7uRkfBieS0KH_-961JeCMbgOQ7CyEtkk5kzOhTqUaOo3Tf1hcieP3acwXPiYpuVu8lbFn8SGajgL' );
 	
     $token 	 = $_GET['device_id'];/*FCM 接收端的token*/
 	$message = $_GET['message'];/*要接收的內容*/

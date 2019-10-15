@@ -77,7 +77,15 @@ if($stmt!='' && $stmt->rowCount() > 0){
 				$row['image_large']="http://whospets.com/images/product/".$aa;
 			}
 			
-		$petArr[]=$row;
+			//prepare fb image
+			if ($row['fb_id']=="0")
+			 $row['postuserimage']="./assets/images/profile/200x200jordan.png";
+			else
+				$row['postuserimage']="http://graph.facebook.com/".$row['fb_id']."/picture?type=normal";
+			
+			$row['postusername']=$row['firstname']." ".$row['lastname'];
+			
+			$petArr[]=$row;
 	}
 	
 	

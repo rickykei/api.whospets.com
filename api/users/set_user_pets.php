@@ -98,7 +98,7 @@ if( $pet->store_id !="" && $pet->store_id >0){
 		if ($img->avatar!=''){
 			
 			$img->product_id = $pet->id;
-			$img->is_default='N';
+			$img->is_default='Y';
 			$stmt=$img->addImage();
 		}
 
@@ -123,7 +123,7 @@ if( $pet->store_id !="" && $pet->store_id >0){
 			$country->getDistrictNameById($pet->sub_country_id);
 			//find all device_id which user live in pet lost district
 			$dids=$profile->getDeviceIdByCountryId($pet->sub_country_id);
-			
+			if ($dids!=""){
 			$push->device_id = implode(",",$dids);
 			$push->push_title = "Please Help! ".$pet->name_of_pet." is lost in ".$country->title;  
 			$push->push_content = "Please Help! ".$pet->name_of_pet." is lost in ".$country->title.", Please help to keep an eye for my lost pet.
@@ -133,13 +133,14 @@ if( $pet->store_id !="" && $pet->store_id >0){
 			$push->approved ="0";
 			$push->type =1;
 			$stmt2=$push->createPush();
+			}
 		}else if ($pet->pet_status == '2'){
 			
 			//find pet lost district
 			$country->getDistrictNameById($pet->sub_country_id);
 			//find all device_id which user live in pet lost district
 			$dids=$profile->getDeviceIdByCountryId($pet->sub_country_id);
-			
+			if ($dids!=""){
 			$push->device_id = implode(",",$dids);
 			$push->push_title = "I have found this lost pet in ".$country->title.", Please help search for it's owner!";  
 			$push->push_content = "I have found this lost pet in ".$country->title.", Please help search for it's owner!";
@@ -148,6 +149,7 @@ if( $pet->store_id !="" && $pet->store_id >0){
 			$push->approved ="0";
 			$push->type =5;
 			$stmt2=$push->createPush();
+			}
 		}
 
 

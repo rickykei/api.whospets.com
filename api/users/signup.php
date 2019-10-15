@@ -47,7 +47,11 @@ if($user->logintype!='fb'){
 		);
 		$result = "{\"success\":\"true\", \"data\":". json_encode($user_arr)."}";   
 	 }else{
-		 	 $result = "{\"success\":\"false\"}";
+$user_arr=array(
+        "status" => false,
+        "message" => "Username already exists!"
+    );
+		 	 $result = "{\"success\":\"false\", \"data\":". json_encode($user_arr)."}";  
 	 }
 }else if($user->logintype=='fb'){
 	 if($user->signup()){
@@ -59,14 +63,18 @@ if($user->logintype!='fb'){
     );
 	$result = "{\"success\":\"true\", \"data\":". json_encode($user_arr)."}";   
 	 }else{
-		 	 $result = "{\"success\":\"false\"}";
+ $user_arr=array(
+        "status" => false,
+        "message" => "Username already exists!"
+    );
+		 	 $result = "{\"success\":\"false\", \"data\":". json_encode($user_arr)."}";  
 	 }
 }else{
     $user_arr=array(
         "status" => false,
         "message" => "Username already exists!"
     );
-	  $result = "{\"success\":\"false\"}";
+	$result = "{\"success\":\"false\", \"data\":". json_encode($user_arr)."}";  
 }
 echo($result);
 ?>

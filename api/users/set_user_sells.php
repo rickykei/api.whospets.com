@@ -70,6 +70,7 @@ if(!is_array($decoded)){
 	if ($stmt!=""){
 		$country->getDistrictNameById($sell->sub_country_id);
 		$dids=$profile->getDeviceIdByCountryId($sell->sub_country_id);
+		if ($dids!=""){
 		$push->device_id = implode(",",$dids);
 			$push->push_title = $sell->title.", ".$sell->description." is available from ".$country->title;   
 			$push->push_content = $sell->title.", ".$sell->description." is available from ".$country->title;  
@@ -78,6 +79,7 @@ if(!is_array($decoded)){
 			$push->approved ="1";
 			$push->type =4;
 			$stmt2=$push->createPush();
+		}
 	}
 	
 if($stmt){

@@ -49,7 +49,7 @@ if($stmt->rowCount() > 0){
 		"language"=> $row2['language'],
 		"firstname"=> $row2['firstname'],
 		"lastname"=> $row2['lastname'],
-		"image" => "http://graph.facebook.com/".$user->fb_uid."/picture?type=normal"
+		"image" => "https://graph.facebook.com/".$user->fb_uid."/picture?type=normal"
     );
 	$result = "{\"success\":\"true\", \"data\":". json_encode($user_arr)."}";   
 }
@@ -58,7 +58,7 @@ else{
         "status" => false,
         "message" => "Invalid Username or Password!",
     );
-	  $result = "{\"success\":\"false\"}";
+	 	$result = "{\"success\":\"false\", \"data\":". json_encode($user_arr)."}";   
 }
 // make it json format
 echo($result);

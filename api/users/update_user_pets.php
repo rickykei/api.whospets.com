@@ -94,7 +94,7 @@ $img->avatar=$avatar;
 if ($pet->product_id!=''){
 	
   
-		if($pet->updatePet()){ 
+		if($pet->updatePet($img->avatar)){ 
 			//upload image 20190106
 			if ($img->avatar!=''){
 				
@@ -116,7 +116,8 @@ if ($pet->product_id!=''){
 			{
 				//find all device_id which user live in hk
 				$dids=$profile->getDeviceIdByCountryId(1);
-				
+					if ($dids!="")
+{	
 				$push->device_id = implode(",",$dids);
 				$push->push_title = "Pets need adoption!";  
 				$push->push_content = $pet->name_of_pet." is looking for a new home, please get in touch if you are interested!";  
@@ -125,13 +126,15 @@ if ($pet->product_id!=''){
 				$push->approved ="0";
 				$push->type =2;
 				$stmt2=$push->createPush();
+}
 			}else if ($pet->pet_status == '1'){
 				
 				//find pet lost district
 				$country->getDistrictNameById($pet->sub_country_id);
 				//find all device_id which user live in pet lost district
 				$dids=$profile->getDeviceIdByCountryId($pet->sub_country_id);
-				
+		if ($dids!="")
+{				
 				$push->device_id = implode(",",$dids);
 				$push->push_title = "Please Help! ".$pet->name_of_pet." is lost in ".$country->title;  
 				$push->push_content = "Please Help! ".$pet->name_of_pet." is lost in ".$country->title.", Please help to keep an eye for my lost pet.
@@ -141,13 +144,15 @@ if ($pet->product_id!=''){
 				$push->approved ="0";
 				$push->type =1;
 				$stmt2=$push->createPush();
+}
 			}else if ($pet->pet_status == '2'){
 				
 				//find pet lost district
 				$country->getDistrictNameById($pet->sub_country_id);
 				//find all device_id which user live in pet lost district
 				$dids=$profile->getDeviceIdByCountryId($pet->sub_country_id);
-				
+		if ($dids!="")
+{				
 				$push->device_id = implode(",",$dids);
 				$push->push_title = "I have found this lost pet in ".$country->title.", Please help search for it's owner!";  
 				$push->push_content = "I have found this lost pet in ".$country->title.", Please help search for it's owner!";
@@ -156,6 +161,7 @@ if ($pet->product_id!=''){
 				$push->approved ="0";
 				$push->type =5;
 				$stmt2=$push->createPush();
+}
 			}
 			
 		}else{

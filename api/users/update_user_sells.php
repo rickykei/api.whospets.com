@@ -60,7 +60,7 @@ $img->avatar=$avatar;
 if($user->user_id==''|| $post->id==''){
 		$stmt=false;
 	}else{
-		$stmt = $post->updateSell($user->user_id,$post->id);
+		$stmt = $post->updateSell($user->user_id,$post->id,$img->avatar);
 		//updae image 20190406
 		if ($img->avatar!=''){
 	//		echo $post->id;

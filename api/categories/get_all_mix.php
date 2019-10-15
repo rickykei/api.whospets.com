@@ -48,6 +48,15 @@ if($stmt->rowCount() > 0){
 				$row['image']="http://whospets.com/images/app_img/".$row['app_table']."/thumb/".$aa;
 				$row['image_large']="http://whospets.com/images/app_img/".$row['app_table']."/".$aa;
 			}
+			
+			//prepare fb image
+			//if ($row['fb_id']=="0")
+			// $row['postuserimage']="./assets/images/profile/200x200jordan.png";
+			//else
+			//	$row['postuserimage']="http://graph.facebook.com/".$row['fb_id']."/picture?type=normal";
+			
+			//$row['postusername']=$row['firstname']." ".$row['lastname'];
+			
 		$postArr[]=$row;
 	}
 	

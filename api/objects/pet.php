@@ -99,7 +99,7 @@ class Pet{
 		 
 	}
 		//update Pet Info 
-    function updatePet(){ 
+    function updatePet($img){ 
         // query to insert record
         $query = " update 
                      shop_products 
@@ -199,8 +199,15 @@ class Pet{
         // execute query
         if($stmt->execute()){
 			
-			 
-					return true;
+			if ($img!=''){
+				$query = "update 
+						shop_image set is_default='N' 
+						   where product_id =:id ";
+							$stmt2 = $this->conn->prepare($query);
+							$stmt2->bindParam(":id", $this->product_id);
+							$stmt2->execute();
+			}
+			return true;
 			 
         }  
     
@@ -397,7 +404,7 @@ class Pet{
     function getPetsBySearch($limit,$offset,$keywords){
         // select all query
         $query = "SELECT
-                    shop_products.*,shop_image.filename as image,
+					shop_products.*,shop_image.filename as image,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
 					shop_store.user_id 
@@ -425,15 +432,19 @@ class Pet{
         // select all query
         $query = "SELECT
                     shop_products.*,
-					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id limit 0,1 ) as image,
+					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id order by shop_image.id desc limit 0,1 ) as image,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
 					(select count(*) from shop_feedback b where b.product_id=shop_products.product_id ) as commentcnt ,
-					shop_store.user_id 
+					shop_store.user_id ,
+					profile.fb_id as fb_id,
+					profile.firstname,
+					profile.lastname
                 FROM
-                     user,shop_store ," . $this->table_name . "  
+                     user,shop_store ," . $this->table_name . "  ,profile
                 WHERE
 					shop_products.store_id=shop_store.id
+					and profile.user_id=shop_store.user_id
 					and shop_products.product_id=".$this->product_id."  
 					and shop_store.user_id = user.id
 					order by shop_products.product_id desc";
@@ -450,7 +461,7 @@ class Pet{
         // select all query
         $query = "SELECT
                     shop_products.*,
-					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id limit 0,1 ) as image,
+					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id order by shop_image.id desc limit 0,1 ) as image,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
 					shop_store.user_id 
@@ -475,7 +486,7 @@ class Pet{
         // select all query
         $query = "SELECT
                     shop_products.*,
-					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id limit 0,1 ) as image,
+					(select shop_image.filename  from shop_image where shop_image.product_id =shop_products.product_id and is_default ='Y' limit 0,1 ) as image,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
 					shop_store.user_id 
@@ -496,28 +507,38 @@ class Pet{
     }
 	
 	function getPetsByStatus($limit,$offset){
+		 $sql_str="";
+		 
+		 $sql_str=$this->getBlockUserListByUserID($this->user_id);
+		 
         // select all query
         $query = "SELECT
+					max(shop_image.id) as shop_max_id,
                     shop_products.*,shop_image.title as image,shop_image.filename as image,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
 					shop_store.user_id as user_id ,
 					(select count(*) from shop_feedback b where b.product_id=shop_products.product_id ) as commentcnt ,
-					profile.lastname,profile.firstname
+					profile.fb_id as fb_id,
+					profile.firstname,
+					profile.lastname,
+					profile.user_id
 					
                 FROM
                     " . $this->table_name . "   ,shop_image, shop_store ,profile
                 WHERE
 					shop_products.store_id=shop_store.id
-					and profile.user_id=shop_store.id
-					and shop_products.product_id = shop_image.product_id and 
-					shop_products.pet_status=".$this->pet_status."   
-					GROUP BY shop_products.store_id
+					and profile.user_id=shop_store.user_id
+					and shop_products.product_id = shop_image.product_id 
+					and shop_products.pet_status=".$this->pet_status."   
+					and shop_products.status = 1
+					".$sql_str."
+					group by shop_products.product_id
 					order by shop_products.product_id desc 
 					limit ".$offset.", 10"
 					;
         // prepare query statement
-		//echo $query;
+		// echo $query;
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
@@ -527,7 +548,10 @@ class Pet{
 		function getPetsByCountry($limit,$offset,$country_array,$petcat){
 			
 		$str=implode(",",$country_array);
-		
+		 $sql_str="";
+		 
+		 $sql_str=$this->getBlockUserListByUserID($this->user_id);
+		 
 		if ($petcat >0 && $petcat <3){
 			$petcat_str=" and shop_products.sub_category in (".$petcat.")";
 		
@@ -540,24 +564,32 @@ class Pet{
 		
         // select all query
         $query = "SELECT
-                    distinct shop_image.product_id,shop_products.*,shop_image.title as image,shop_image.filename as image,
+					max(shop_image.id) as shop_max_img,
+                    shop_products.*,shop_image.title as image,shop_image.filename as image,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.table_name='shop_products') as likecnt,
 					(select count(*) from app_like b where b.content_id=shop_products.product_id and b.user_id=shop_store.user_id and b.table_name='shop_products') as ownlike,
-					(select count(*) from shop_feedback b where b.product_id=shop_products.product_id ) as commentcnt
-                FROM
-                    " . $this->table_name . "  ,shop_image , shop_store 
-                WHERE
-					shop_products.store_id=shop_store.id
+					(select count(*) from shop_feedback b where b.product_id=shop_products.product_id ) as commentcnt,
+					profile.fb_id as fb_id,
+					profile.firstname,
+					profile.lastname,
+          profile.user_id
 					
-					and shop_products.product_id = shop_image.product_id and 
-					shop_products.sub_country_id in (".$str.")    
+                FROM
+                    " . $this->table_name . "  ,shop_image , shop_store ,profile
+                WHERE
+					shop_products.store_id=shop_store.id and
+					profile.user_id=shop_store.user_id
+					and shop_products.product_id = shop_image.product_id 
+					and shop_products.sub_country_id in (".$str.")    
+					and status = 1 
 					".$petcat_str."
-					GROUP BY shop_products.store_id
-					order by likecnt desc ,shop_products.product_id desc 
+					".$sql_str."
+					group by shop_products.product_id
+					order by likecnt desc ,shop_products.product_id desc  
 					limit ".$offset.", 10"
 					;
         // prepare query statement
-		//echo $query;
+		  //echo $query;
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
@@ -603,4 +635,43 @@ class Pet{
     rmdir($dirPath);
 	}
 	
+	
+	
+	 
+	 function getBlockUserListByUserID($user_id){
+		
+		$query = "select a.block_user_id 
+				from
+                    app_filter_user a 
+                where a.user_id=:user_id";
+				 
+				// echo $query;
+				$stmt = $this->conn->prepare($query);
+                $stmt->bindParam(":user_id", $user_id);
+            
+			// echo $query;
+        // execute query
+        if($stmt->execute()){	
+			if($stmt->rowCount() > 0){
+			// get retrieved row
+				$i=0;
+				while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+					 $block_user_id[$i]=$row['block_user_id'];
+					 $i++;
+				}
+				$str = implode (", ", $block_user_id);
+				
+				if($this->user_id!="" || $this->user_id!=0){
+			 
+					$str=" and profile.user_id not in (".$str.") ";
+			 
+				} 
+				
+				return $str;
+			}else{
+				return "";
+			}
+		}   
+		return "";
+	} 
 }

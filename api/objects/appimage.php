@@ -51,6 +51,9 @@ class Appimage{
     function addImage(){ 
 	
 	//update_image_filename();
+	
+	$this->filename=md5(date('Ymdhhmmss').$this->title);
+	
 	$fname=$this->product_id.'/'.$this->filename.".".$this->exten;
 	$name=$this->filename;
 	$name_wfn=$this->filename;
@@ -71,7 +74,7 @@ class Appimage{
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":filename",$fname);
         $stmt->bindParam(":product_id", $this->product_id);
-		$stmt->bindParam(":is_default","Y");
+		$stmt->bindParam(":is_default", $this->is_default);
 		$stmt->bindParam(":app_table", $this->app_table);
  
 		

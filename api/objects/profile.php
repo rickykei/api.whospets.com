@@ -35,8 +35,8 @@ class Profile{
 	
  
 	function getDeviceIdByCountryId($country_id){
-		
-		$device_id_sql=" SELECT device_id,user_id FROM `profile` WHERE `country_id` = 1 and device_id != '' ";
+		$device_ids="";
+		$device_id_sql=" SELECT device_id,user_id FROM `profile` WHERE `country_id` = 1 and `sub_country_id` = ".$country_id." and device_id != '' ";
 		$stmt = $this->conn->prepare($device_id_sql);
 		
 		 if($stmt->execute()){
@@ -52,7 +52,7 @@ class Profile{
 		   }
             return $device_ids;
 
-        }
+        } 
 	}
 	
 	

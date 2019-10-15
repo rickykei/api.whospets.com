@@ -71,7 +71,7 @@ class Sell{
 		
 	}
 	
-	function updateSell($user_id,$post_id){
+	function updateSell($user_id,$post_id,$img){
 		$this->user_id=$user_id;
 		$this->id=$post_id;
 		$query = "update
@@ -93,14 +93,17 @@ class Sell{
 		// execute query
         if($stmt->execute()){		 
 	// delete app_img record if hv
-			$query = "update 
-                    app_image set is_default='N' 
-                       where product_id =:id and app_table='SELL' ";
-					    $stmt2 = $this->conn->prepare($query);
-						$stmt2->bindParam(":id", $this->id);
-						$stmt2->execute();
-            //$this->id = $this->conn->lastInsertId();
-            return true;
+			if ($img!=''){
+				$query = "update 
+						app_image set is_default='N' 
+						   where product_id =:id and app_table='SELL' ";
+							$stmt2 = $this->conn->prepare($query);
+							$stmt2->bindParam(":id", $this->id);
+							$stmt2->execute();
+			}
+				//$this->id = $this->conn->lastInsertId();
+				return true;
+			
         }
 
         return false;
@@ -212,19 +215,31 @@ class Sell{
     }  
 	
 	function getAllSells($limit,$offset){
+		
+		 $sql_str="";
+		 
+		 $sql_str=$this->getBlockUserListByUserID($this->user_id);
+		
+		
         // select all query
         $query = "SELECT
                     a.* ,
 					b.filename as image,
 					(select count(*) from app_like b where b.content_id=a.id and b.table_name='app_sell') as likecnt,
 					(select count(*) from app_like b where b.content_id=a.id and b.user_id=a.user_id and b.table_name='app_sell') as ownlike,
-					(select count(*) from app_comment b where b.content_id=a.id and b.table_name='app_sell') as commentcnt
+					(select count(*) from app_comment b where b.content_id=a.id and b.table_name='app_sell') as commentcnt ,
+					c.fb_id as fb_id,
+					c.firstname,
+					c.lastname
                 FROM
-                    " . $this->table_name . " a ,app_image b
+                    " . $this->table_name . " a ,app_image b , profile c
 					where 
-					  
-					     a.id= b.product_id 
-						 and b.app_table='SELL'
+					c.user_id=a.user_id 
+					and a.id= b.product_id 
+					and status = 1 
+					and b.app_table='SELL'
+					and b.is_default='Y' 
+					".$sql_str."
 					order by a.id desc
 					limit ".$limit." offset ".$offset ;
         // prepare query statement
@@ -252,4 +267,41 @@ class Sell{
     }
     rmdir($dirPath);
 	}
+	
+	function getBlockUserListByUserID($user_id){
+		
+		$query = "select a.block_user_id 
+				from
+                    app_filter_user a 
+                where a.user_id=:user_id";
+				 
+				// echo $query;
+				$stmt = $this->conn->prepare($query);
+                $stmt->bindParam(":user_id", $user_id);
+            
+			// echo $query;
+        // execute query
+        if($stmt->execute()){	
+			if($stmt->rowCount() > 0){
+			// get retrieved row
+				$i=0;
+				while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+					 $block_user_id[$i]=$row['block_user_id'];
+					 $i++;
+				}
+				$str = implode (", ", $block_user_id);
+				
+				if($this->user_id!="" || $this->user_id!=0){
+			 
+					$str=" and c.user_id not in (".$str.") ";
+			 
+				} 
+				
+				return $str;
+			}else{
+				return "";
+			}
+		}   
+		return "";
+	} 
 }

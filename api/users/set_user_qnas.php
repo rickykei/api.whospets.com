@@ -73,6 +73,7 @@ if(!is_array($decoded)){
 			$pet->findPetBreedByPetId($post->owner_pet_id);
 			//echo $pet->category_id;
 			$dids=$pet->getDeviceIdsByPetBreed($pet->category_id);
+			if ($dids!=""){
 			$push->device_id = implode(",",$dids);
 			$push->push_title = "Please help! ".$post->title.", ".$post->description." ";   
 			$push->push_content = "Please help! ".$post->title.", ".$post->description." ";   
@@ -81,7 +82,7 @@ if(!is_array($decoded)){
 			$push->approved ="1";
 			$push->type =6;
 			$stmt2=$push->createPush();
-			
+			}
 		}
 	}
 	

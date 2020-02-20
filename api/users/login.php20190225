@@ -7,25 +7,27 @@ header('Content-Type: application/json');
 // include database and object files
 include_once '../config/database.php';
 include_once '../objects/user.php';
-include_once '../objects/profile.php';
-
  
 // get database connection
 $database = new Database();
 $db = $database->getConnection();
 
 // prepare user object
-$profile = new Profile($db);
 $user = new User($db);
 // set ID property of user to be edited
 $user->username = isset($_REQUEST['username']) ? $_REQUEST['username'] : die();
+$user->password = base64_encode(isset($_REQUEST['password']) ? $_REQUEST['password'] : "");
+$user->logintype = isset($_REQUEST['logintype']) ? $_REQUEST['logintype'] : die();
 $user->fb_uid = isset($_REQUEST['fb_uid']) ? $_REQUEST['fb_uid'] : "";
 
 // read the details of user to be edited
-//echo $user->username;
 
-	$stmt = $profile->getProfileByUsername($user->username);	
- 
+if ($user->logintype=='fb'){
+	$stmt = $user->fblogin();	
+}else{
+	$stmt = $user->login();
+}
+
 
 if($stmt->rowCount() > 0){
     // get retrieved row
@@ -35,38 +37,16 @@ if($stmt->rowCount() > 0){
         "status" => 'true',
         "message" => "Successfully Login!",
         "id" => $row['id'],
-        "tc" => $row['tc'],
-		"user_id" => $row['user_id'],
-		"lastname" => $row['lastname'],
-		"firstname" => $row['firstname'],
-		"email" => $row['email'],
-		"street" => $row['street'],
-		"city" => $row['city'],
-		"about" => $row['about'],
-		"newsletter" => $row['newsletter'],
-		"seller" => $row['seller'],
-		"notification" => $row['notification'],
-		"gender" => $row['gender'],
-		"birthday" => $row['birthday'],
-		"bio" => $row['bio'],
-		"country_id" => $row['country_id'],
-		"sub_country_id" => $row['sub_country_id'],
-		"fb_uid" => "http://graph.facebook.com/".$user->fb_uid."/picture?type=normal",
-		//"fb_uid"=>"http://bmautohk.com/images/logo.jpg"
-		"followers" => $row['followers'],
-		"following" => $row['following']
+        "username" => $row['username'],
+		"language"=> 'en',
+		"image" => "http://graph.facebook.com/".$user->fb_uid."/picture?type=normal"
     );
-	
-	foreach($user_arr as $key=>$value ) {
-		if ($value==null)
-			$user_arr[$key]="";
-    }
 	$result = "{\"success\":\"true\", \"data\":". json_encode($user_arr)."}";   
 }
 else{
     $user_arr=array(
         "status" => false,
-        "message" => "Invalid Username",
+        "message" => "Invalid Username or Password!",
     );
 	  $result = "{\"success\":\"false\"}";
 }

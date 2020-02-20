@@ -1,27 +1,30 @@
 <?php
+
+
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
 // include database and object files
 include_once '../config/database.php';
-include_once '../objects/qna.php';
+include_once '../objects/push.php';
  
 // get database connection
 $database = new Database();
 $db = $database->getConnection();
 
 // prepare user object
-$post = new Qna($db);
+$push = new push($db);
 // set ID property of user to be edited
-$post->user_id =$_REQUEST['user_id']; 
-$post->id =$_REQUEST['content_id']; 
-isset($_REQUEST['limit'])? $limit =$_REQUEST['limit']:$limit=10; 
-isset($_REQUEST['offset'])? $offset =$_REQUEST['offset']:$offset=0; 
+$push->user_id =$_REQUEST['user_id']; 
+$push->id=$_REQUEST['content_id'];
 
-//echo $post->user_id ;
+// isset($_REQUEST['limit'])? $limit =$_REQUEST['limit']:$limit=10; 
+// isset($_REQUEST['offset'])? $offset =$_REQUEST['offset']:$offset=0; 
+
+//echo $push->username ;
  
-$stmt = $post->getUserQnas($limit,$offset);	
- 
+$stmt = $push->getUserpushs($limit,$offset);	
+  
 if($stmt->rowCount() > 0){
     // get retrieved row
      
@@ -32,24 +35,26 @@ if($stmt->rowCount() > 0){
 				$row[$key]="";
 		}
 		
-		if (!file_exists ("/vhost/sosopet/sosopet/images/app_img/QNA/".$row['image'])){
+		if (!file_exists ("/vhost/sosopet/sosopet/images/product/".$row['image'])){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 			}else{
-				$aa=$row['image'];
-				$row['image']="http://whospets.com/images/app_img/QNA/thumb/".$aa;
-				$row['image']="http://whospets.com/images/app_img/QNA/".$aa;
+				$row['image']="http://whospets.com/images/product/thumb/".$row['image'];
 			}
 			
-		$postArr[]=$row;
+		$pushArr[]=$row;
 	}
+	
+	// get push Like Count
+	
+	
     // create array
     $user_arr=array(
         "status" => "true",
-        "message" => "Successfully Get qnas!",
+        "message" => "Successfully Get pushs!",
 		"records" => "".$stmt->rowCount()."",
-        "posts" => $postArr
+        "pushs" => $pushArr
     );
-	$result = "{\"success\":\"true\", \"data\":". json_encode($postArr)."}";   
+	$result = "{\"success\":\"true\", \"data\":". json_encode($pushArr)."}";   
 }
 else{
     $user_arr=array(

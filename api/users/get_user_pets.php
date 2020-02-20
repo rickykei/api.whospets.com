@@ -41,8 +41,8 @@ if($stmt->rowCount() > 0){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 			}else{
 				$aa=$row['image'];
-				$row['image']="http://whospets.com/images/product/thumb/".$aa;
-				$row['image_large']="http://whospets.com/images/product/".$aa;
+				$row['image']="https://whospets.com/images/product/thumb/".$aa;
+				$row['image_large']="https://whospets.com/images/product/".$aa;
 			}
 		
 		$petArr[]=$row;

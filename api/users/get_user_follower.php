@@ -34,7 +34,7 @@ if($stmt->rowCount() > 0){
 		if ($row['fb_id']=="0")
 		 $row['image']="./assets/images/profile/200x200jordan.png";
 		else
-			$row['image']="http://graph.facebook.com/".$row['fb_id']."/picture?type=normal";
+			$row['image']="https://graph.facebook.com/".$row['fb_id']."/picture?type=normal";
 		$sellArr[]=$row;
 	}
     // create array

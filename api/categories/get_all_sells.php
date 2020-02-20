@@ -45,7 +45,7 @@ if($stmt->rowCount() > 0){
 			if ($row['fb_id']=="0")
 			 $row['postuserimage']="./assets/images/profile/200x200jordan.png";
 			else
-				$row['postuserimage']="http://graph.facebook.com/".$row['fb_id']."/picture?type=normal";
+				$row['postuserimage']="https://graph.facebook.com/".$row['fb_id']."/picture?type=normal";
 			
 			$row['postusername']=$row['firstname']." ".$row['lastname'];
 			

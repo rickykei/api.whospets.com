@@ -45,14 +45,14 @@ $post->product_id= $_REQUEST['content_id'];
   
 $stmt = $post->getContent();	
   
-
+//print_r($stmt);
   
 if($stmt->rowCount() > 0){
     // get retrieved row
      
     while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
 	
-	//print_r($row);
+//	print_r($row);
 		foreach($row as $key=>$value ) {
 			if ($value==null)
 				$row[$key]="";

@@ -17,13 +17,14 @@ $db = $database->getConnection();
 $post = new Post($db);
 // set ID property of user to be edited
 $post->user_id =$_REQUEST['user_id']; 
+$post->id=$_REQUEST['content_id'];
+
 isset($_REQUEST['limit'])? $limit =$_REQUEST['limit']:$limit=10; 
 isset($_REQUEST['offset'])? $offset =$_REQUEST['offset']:$offset=0; 
 
-
 //echo $post->username ;
  
-$stmt = $post->getAllPosts($limit,$offset);	
+$stmt = $post->getUserposts($limit,$offset);	
   
 if($stmt->rowCount() > 0){
     // get retrieved row
@@ -35,12 +36,12 @@ if($stmt->rowCount() > 0){
 				$row[$key]="";
 		}
 		
-		if (!file_exists ("/vhost/sosopet/sosopet/images/app_img/LIFESTYLE/".$row['image'])){
+		if (!file_exists ("/vhost/sosopet/sosopet/images/product/".$row['image'])){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 			}else{
-				$row['image']="http://whospets.com/images/app_img/LIFESTYLE/thumb/".$row['image'];
-				$row['image_large']="http://whospets.com/images/app_img/LIFESTYLE/thumb/".$row['image'];
+				$row['image']="http://whospets.com/images/product/thumb/".$row['image'];
 			}
+			
 		$postArr[]=$row;
 	}
 	

@@ -17,18 +17,26 @@ class Image{
     public $product_id;
 	public $is_default;
 	public $exten;
+	public $base64imgstr;
 	
     // constructor with $db as database connection
-    public function __construct($db,$upload){
+    public function __construct($db,$base64imgstr){
         $this->conn = $db;
 		//$this->filename=$upload['image_field']['name'];
-		$this->title=$upload['image_field']['name'];
-		$this->filename=md5($upload['image_field']['name']);
-		$a=explode(".",$upload['image_field']['name']);
+		$this->title='uploadbyapp.jpg';
+		$this->filename=md5('uploadbyapp.jpg');
+		$a=explode(".",'uploadbyapp.jpg');
 		//print_r($a);
 		$this->exten=$a[1];
+		$this->base64imgstr=$base64imgstr;
     }
 	
+	public function base64_to_jpeg( $base64_string, $output_file ) {
+    $ifp = fopen( $output_file, "wb" ); 
+    fwrite( $ifp, base64_decode( $base64_string) ); 
+    fclose( $ifp ); 
+    return( $output_file ); 
+	}
 	 
     // add Image
     function addImage(){ 
@@ -64,7 +72,7 @@ class Image{
 					//copy image to big directory
 					
 					//convert image to thumbnail
-					$handle = new upload($_FILES['image_field']);
+					$handle = new upload($this->base64imgstr);
 					if ($handle->uploaded) {
 					  $handle->file_new_name_body   = $name;
 					  $handle->image_resize         = false;

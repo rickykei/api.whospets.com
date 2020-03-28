@@ -36,7 +36,7 @@ if($stmt->rowCount() > 0){
 				$row[$key]="";
 		}
 		
-		if (!file_exists ("/vhost/sosopet/sosopet/images/product/".$row['image'])){
+		if (!file_exists ("/home/vhost/sosopet/sosopet/images/product/".$row['image'])){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 			}else{
 				$row['image']="http://whospets.com/images/product/thumb/".$row['image'];

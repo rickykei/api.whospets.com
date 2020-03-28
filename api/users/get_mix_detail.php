@@ -59,14 +59,14 @@ if($stmt->rowCount() > 0){
 		}
 		
 		if($img_str!=''){	
-		if (!file_exists ("/vhost/sosopet/sosopet/images/app_img/".$img_str."/".$row['image'])){
+		if (!file_exists ("/home/vhost/sosopet/sosopet/images/app_img/".$img_str."/".$row['image'])){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 		}else{
 				$aa=$row['image'];
 				$row['image']="http://whospets.com/images/app_img/".$img_str."/thumb/".$aa;
 				$row['image_large']="http://whospets.com/images/app_img/".$img_str."/".$aa;
 		}}else{
-			if (!file_exists ("/vhost/sosopet/sosopet/images/product/".$row['image'])){
+			if (!file_exists ("/home/vhost/sosopet/sosopet/images/product/".$row['image'])){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 			}else{
 				$aa=$row['image'];

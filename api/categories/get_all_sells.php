@@ -33,7 +33,7 @@ if($stmt->rowCount() > 0){
 			if ($value==null)
 				$row[$key]="";
 		}
-			if (!file_exists ("/vhost/sosopet/sosopet/images/app_img/SELL/".$row['image'])){
+			if (!file_exists ("/home/vhost/sosopet/sosopet/images/app_img/SELL/".$row['image'])){
 				$row['image']="./assets/images/profile/200x200suarez.png";
 			}else{
 				$aa=$row['image'];

@@ -77,13 +77,13 @@ class Image{
 					  $handle->file_new_name_body   = $name;
 					  $handle->image_resize         = false;
 					  
-					  $handle->process('/vhost/sosopet/sosopet/images/product/'.$this->product_id);
+					  $handle->process('/home/vhost/sosopet/sosopet/images/product/'.$this->product_id);
 					  //$handle->clean();
 					  $handle->file_new_name_body   = $name;
 					  $handle->image_resize         = true;
 					  $handle->image_x              = 250;
 					  $handle->image_ratio_y        = true;
-					  $handle->process('/vhost/sosopet/sosopet/images/product/thumb/'.$this->product_id);
+					  $handle->process('/home/vhost/sosopet/sosopet/images/product/thumb/'.$this->product_id);
 					  
 					  if ($handle->processed) {
 						//echo 'image resized';
